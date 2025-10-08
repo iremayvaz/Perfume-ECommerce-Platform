@@ -1,0 +1,11 @@
+/mvnw text eol=lf
+
+# Varsayılan: metin dosyaları LF
+*           text=auto eol=lf
+
+# Windows batch dosyaları CRLF kalsın
+*.cmd       text eol=crlf
+*.bat       text eol=crlf
+
+# Shell scriptler LF
+*.sh        text eol=lf
