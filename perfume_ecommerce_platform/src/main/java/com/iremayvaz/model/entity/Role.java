@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 
 /**
- * Bir ROLÜN,
+ * Bir rolün,
  * ID'Sİ,
  * İSMİ,
  * SAHİPLERİ ?
@@ -31,7 +31,4 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name")
     private RoleName roleName;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<User> users;
 }

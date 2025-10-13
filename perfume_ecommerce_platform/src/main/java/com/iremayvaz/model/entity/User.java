@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,8 +26,6 @@ import java.util.Set;
  * MAİLİ,
  * TELEFON NUMARASI,
  * ROLÜ,
- * SEPETİ,
- * SİPARİŞLERİ
  * olur.
  * */
 
@@ -49,19 +50,14 @@ public class User {
     @Column(name = "bcrypted_password", nullable = false)
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Role role;             // Bir kullanıcının bir rolü olabilir.
+    @ManyToMany(fetch = FetchType.LAZY)              // Rol bilgisi LOGIN'de çekilsin. Sonra gereksiz
+    @JoinTable(name = "user_roles",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();       // Bir kullanıcı hem USER hem ADMIN olabilir.
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "user")
-    private Set<Order> orders;     // Siparişler : Bir kullanıcının birden fazla siparişi olabilir.
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id", referencedColumnName = "id")
-    private Cart cart;             // Sepet : Bir kullanıcının bir sepeti olabilir.
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Address> address;  // Adresler : Bir kullanıcının birden fazla adresi olabilir.
+    @OneToMany(fetch = FetchType.LAZY,
+                cascade = CascadeType.ALL,
+                orphanRemoval = true)
+    private Set<Address> addresses = new HashSet<>();  // Adresler : Bir kullanıcının birden fazla adresi olabilir.
 }

@@ -14,12 +14,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 
+/**
+ * Bir kategori,
+ * ID'Sİ,
+ * CİNSİYETİ,
+ * KONSANTRASYON TÜRÜ,
+ * MEVSİMİ,
+ * ETİKETİ
+ * içerir.
+ * */
+
 // Parfüm kategori bilgileri
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
     private Gender gender;      // Kokunun cinsiyeti
-    private Concentration name; // EDT, EDP, PARFUME vb.
+
+    @Column(name = "concentration_name")
+    @Enumerated(EnumType.STRING)
+    private Concentration concentrationName; // EDT, EDP, PARFUME vb.
+
+    @Column(name = "season")
+    @Enumerated(EnumType.STRING)
     private Season season;      // Yazlık, kışlık koku
+
+    @Column(name = "accord")
+    private String accord;      // Etiket (Ör. woody, fresh, oriental vs.)
 }

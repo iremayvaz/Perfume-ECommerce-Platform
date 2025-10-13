@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 
 /**
- * Bir SEPETİN,
+ * Bir sepetin,
  * ID'Sİ,
  * SAHİBİ,
  * ÜRÜNLERİ
@@ -27,10 +27,12 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false, // bu ilişkiyi tutan alanın boş (null) olamaz.
-            mappedBy = "cart")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,
+                orphanRemoval = true,
+                mappedBy = "cart")
     private Set<Product> products;  // Bir sepette birden fazla ürün olabilir.
 }
