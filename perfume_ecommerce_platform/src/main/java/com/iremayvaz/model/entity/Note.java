@@ -2,15 +2,15 @@ package com.iremayvaz.model.entity;
 
 import com.iremayvaz.model.enums.NoteType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Table(name = "notes")
+@Table(name = "notes",
+        uniqueConstraints = @UniqueConstraint(name = "uk_notes_name", columnNames = "note_name"))
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 
 /**
  * Bir notanın,

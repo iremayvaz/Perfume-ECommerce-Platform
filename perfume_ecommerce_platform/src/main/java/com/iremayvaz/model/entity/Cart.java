@@ -34,14 +34,14 @@ public class Cart {
     @OneToMany(mappedBy = "cart",
                 cascade = CascadeType.ALL,
                 orphanRemoval = true)
-    private Set<CartItem> items = new HashSet<>();  // Bir sepette birden fazla item olabilir.
+    private Set<CartItem> cartItems = new HashSet<>();  // Bir sepette birden fazla item olabilir.
 
     public void addItem(CartItem item) {
         item.setCart(this);
-        items.add(item);
+        cartItems.add(item);
     }
     public void removeItem(CartItem item) {
         item.setCart(null);
-        items.remove(item);
+        cartItems.remove(item);
     }
 }

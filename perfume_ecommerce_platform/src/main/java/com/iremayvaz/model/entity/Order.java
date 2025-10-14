@@ -1,17 +1,17 @@
 package com.iremayvaz.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 
 /**
  * Bir siparişin,
@@ -29,16 +29,33 @@ public class Order {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "order")
-    private Set<Product> products;  // Ürünler
+                orphanRemoval = true,
+                mappedBy = "order")
+    private Set<OrderItem> orderItems = new HashSet<>();  // Ürünler
 
-    // FetchType.LAZY : Uygulamanızın veriyi gerçekten kullanmaya karar verene kadar yüklemeyi erteleyeceği anlamına gelir.
-    @ManyToOne(optional = false,    // bu ilişkiyi tutan alanın boş (null) olamaz.
-            fetch = FetchType.LAZY) // ilgili verilerin ne zaman veritabanından yükleneceğini belirler.
-    @JoinColumn(name = "user_id")
+                                        // FetchType.LAZY : Uygulamanızın veriyi gerçekten kullanmaya karar verene kadar yüklemeyi erteleyeceği anlamına gelir.
+    @ManyToOne(optional = false,        // bu ilişkiyi tutan alanın boş (null) olamaz.
+                fetch = FetchType.LAZY) // ilgili verilerin ne zaman veritabanından yükleneceğini belirler.
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Address address;
+    // sipariş oluşturulduktan sonra adres sabitlenmeli.
+    // Kullanıcı adresi güncellese bile sipariş adresi değişmemeli.
+    @Column(nullable = false)
+    private String shippingCity;
+
+    @Column(nullable = false)
+    private String shippingStreet;
+
+    @Column(nullable = false)
+    private String shippingDetail;
+
+    public void addItem(OrderItem item){
+        item.setOrder(this);
+        orderItems.add(item);
+    }
+    public void removeItem(OrderItem item){
+        item.setOrder(null);
+        orderItems.remove(item);
+    }
 }

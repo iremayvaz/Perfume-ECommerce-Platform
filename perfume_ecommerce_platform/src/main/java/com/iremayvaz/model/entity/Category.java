@@ -4,15 +4,14 @@ import com.iremayvaz.model.enums.Concentration;
 import com.iremayvaz.model.enums.Gender;
 import com.iremayvaz.model.enums.Season;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "categories")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 
 /**
  * Bir kategori,
