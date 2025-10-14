@@ -3,6 +3,7 @@ package com.iremayvaz.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +39,9 @@ public class Order {
                 fetch = FetchType.LAZY) // ilgili verilerin ne zaman veritabanından yükleneceğini belirler.
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "created_at",  nullable = false)
+    private LocalDateTime createdAt;
 
     // sipariş oluşturulduktan sonra adres sabitlenmeli.
     // Kullanıcı adresi güncellese bile sipariş adresi değişmemeli.
