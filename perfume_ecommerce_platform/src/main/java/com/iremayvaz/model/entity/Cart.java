@@ -1,17 +1,17 @@
 package com.iremayvaz.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "carts")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 
 /**
  * Bir sepetin,
@@ -27,12 +27,21 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL,
-                orphanRemoval = true,
-                mappedBy = "cart")
-    private Set<Product> products;  // Bir sepette birden fazla ürün olabilir.
+    @OneToMany(mappedBy = "cart",
+                cascade = CascadeType.ALL,
+                orphanRemoval = true)
+    private Set<CartItem> items = new HashSet<>();  // Bir sepette birden fazla item olabilir.
+
+    public void addItem(CartItem item) {
+        item.setCart(this);
+        items.add(item);
+    }
+    public void removeItem(CartItem item) {
+        item.setCart(null);
+        items.remove(item);
+    }
 }

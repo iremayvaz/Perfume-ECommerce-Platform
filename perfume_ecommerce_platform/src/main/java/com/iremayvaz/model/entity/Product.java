@@ -1,9 +1,9 @@
 package com.iremayvaz.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -13,7 +13,8 @@ import java.util.Set;
 @Table(name = "products")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 
 /**
  * Bir ürünün,
@@ -35,33 +36,36 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "brand_name")
+    @Column(name = "brand_name", nullable = false)
     private String brandName;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY,
+                optional = false)
+    @JoinColumn(name = "category_id", nullable = false)             // karşı entity'den gelen FK
     private Category category;
 
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
+
+    @Min(0)
+    @Max(5)
     private Double rating;
 
-    @Column(name = "top_notes")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_top_notes",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "note_id"))
+            joinColumns = @JoinColumn(name = "product_id"),         // bu entity'nin FK'sı
+            inverseJoinColumns = @JoinColumn(name = "note_id"))     // karşı entity'nin FK'sı
     private Set<Note> topNotes = new HashSet<>();
 
-    @Column(name = "heart_notes")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_heart_notes",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "note_id"))
     private Set<Note> heartNotes = new HashSet<>();
 
-    @Column(name = "base_notes")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_base_notes",
             joinColumns = @JoinColumn(name = "product_id"),
