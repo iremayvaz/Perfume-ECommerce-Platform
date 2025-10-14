@@ -2,23 +2,21 @@ package com.iremayvaz.model.entity;
 
 import com.iremayvaz.model.enums.RoleName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.Set;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "roles",
+        uniqueConstraints = @UniqueConstraint(name = "uk_roles_name", columnNames = "role_name"))
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 
 /**
  * Bir rolün,
  * ID'Sİ,
  * İSMİ,
- * SAHİPLERİ ?
  * olur.
  * */
 
@@ -29,6 +27,6 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_name")
+    @Column(name = "role_name", nullable = false)
     private RoleName roleName;
 }

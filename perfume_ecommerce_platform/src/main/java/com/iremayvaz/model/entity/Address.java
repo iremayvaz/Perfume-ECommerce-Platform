@@ -2,13 +2,12 @@ package com.iremayvaz.model.entity;
 
 import com.iremayvaz.model.enums.AddressType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "addresses")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -29,12 +28,17 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "address_type")
+    @Column(name = "address_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private AddressType type;   // Ev, İş, Okul vb.
 
+    @Column(nullable = false)
     private String city;        // Şehir
+
+    @Column(nullable = false)
     private String street;      // Mahalle
+
+    @Column(nullable = false)
     private String detail;      // Detay
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

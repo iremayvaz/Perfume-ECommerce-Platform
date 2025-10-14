@@ -1,18 +1,16 @@
 package com.iremayvaz.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
-@Data
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_users_email", columnNames = "email")})
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -35,7 +33,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @Column(name = "phone_number", nullable = false)
@@ -58,6 +56,16 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY,
                 cascade = CascadeType.ALL,
-                orphanRemoval = true)
+                orphanRemoval = true,
+                mappedBy = "user")
     private Set<Address> addresses = new HashSet<>();  // Adresler : Bir kullanıcının birden fazla adresi olabilir.
+
+    public void addAddress(Address address) {
+        address.setUser(this);
+        addresses.add(address);
+    }
+    public void removeAddress(Address address) {
+        address.setUser(null);
+        addresses.remove(address);
+    }
 }
