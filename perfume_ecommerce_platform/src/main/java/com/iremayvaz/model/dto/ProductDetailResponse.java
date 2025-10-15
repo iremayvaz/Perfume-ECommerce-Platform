@@ -1,7 +1,5 @@
 package com.iremayvaz.model.dto;
 
-import com.iremayvaz.model.entity.Category;
-import com.iremayvaz.model.entity.Note;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,10 +15,10 @@ public class ProductDetailResponse {
     private Long id;
     private String productName;
     private String brandName;
-    private Category category;
+    private CategoryDetailResponse category;
     private BigDecimal price;
     private Double rating;
-    private Set<Note> topNotes;
-    private Set<Note> heartNotes;
-    private Set<Note> baseNotes;
+    private Set<String> topNotes;
+    private Set<String> heartNotes;
+    private Set<String> baseNotes;
 }

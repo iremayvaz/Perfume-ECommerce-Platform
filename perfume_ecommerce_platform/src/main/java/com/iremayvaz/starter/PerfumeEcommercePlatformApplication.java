@@ -4,10 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@EntityScan(basePackages = {"com.iremayvaz"})       // Database tablolarını görmek için
-@ComponentScan(basePackages = {"com.iremayvaz"})
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = {"com.iremayvaz"})    // Database repository erişimi
+@EntityScan(basePackages = {"com.iremayvaz"})               // Database tablolarını oluşturmak için
+@ComponentScan(basePackages = {"com.iremayvaz"})
+
 public class PerfumeEcommercePlatformApplication {
 
     public static void main(String[] args) {

@@ -1,21 +1,24 @@
 package com.iremayvaz.service;
 
+import com.iremayvaz.model.dto.CategoryDetailResponse;
 import com.iremayvaz.model.dto.ProductDetailResponse;
 import com.iremayvaz.model.dto.ProductResponse;
+import com.iremayvaz.model.entity.Note;
 import com.iremayvaz.model.entity.Product;
 import com.iremayvaz.repository.ProductRepository;
 import com.iremayvaz.repository.specs.ProductSpecifications;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
-    ProductRepository productRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public List<ProductResponse> getProductList(){
         List<ProductResponse> productsResponse = new ArrayList<>();
@@ -47,14 +50,37 @@ public class ProductService {
     }
 
     public ProductDetailResponse getProductInfo(Long id) {
-        ProductDetailResponse productDetailResponse = new ProductDetailResponse();
         Optional<Product> optional = productRepository.findById(id);
 
         if (optional.isPresent()){
-            BeanUtils.copyProperties(optional.get(), productDetailResponse);
+            CategoryDetailResponse categoryDetailResponse
+                    = new CategoryDetailResponse(optional.get().getCategory().getId(),
+                                                optional.get().getCategory().getGender(),
+                                                optional.get().getCategory().getConcentrationName(),
+                                                optional.get().getCategory().getSeason(),
+                                                optional.get().getCategory().getAccord());
+            ProductDetailResponse productDetailResponse
+                    = new ProductDetailResponse(optional.get().getId(),
+                    optional.get().getProductName(),
+                    optional.get().getBrandName(),
+                    categoryDetailResponse,
+                    optional.get().getPrice(),
+                    optional.get().getRating(),
+                    mapNoteNames(optional.get().getTopNotes()),
+                    mapNoteNames(optional.get().getHeartNotes()),
+                    mapNoteNames(optional.get().getBaseNotes()));
+
             return productDetailResponse;
         } else {
             throw new IllegalArgumentException("Id ile kayıtlı ürün yok!");
         }
     }
+
+    private static Set<String> mapNoteNames(Set<Note> notes) {
+        if (notes == null) return Collections.emptySet();
+        return notes.stream()
+                .map(Note::getNoteName)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
 }
