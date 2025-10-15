@@ -2,9 +2,10 @@ package com.iremayvaz.starter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 
+@EntityScan(basePackages = {"com.iremayvaz"})       // Database tablolarını görmek için
 @ComponentScan(basePackages = {"com.iremayvaz"})
 @SpringBootApplication
 public class PerfumeEcommercePlatformApplication {
