@@ -7,18 +7,18 @@ import com.iremayvaz.model.entity.Note;
 import com.iremayvaz.model.entity.Product;
 import com.iremayvaz.repository.ProductRepository;
 import com.iremayvaz.repository.specs.ProductSpecifications;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public List<ProductResponse> getProductList(){
         List<ProductResponse> productsResponse = new ArrayList<>();

@@ -4,17 +4,17 @@ import com.iremayvaz.model.dto.ProductDetailResponse;
 import com.iremayvaz.model.dto.ProductResponse;
 import com.iremayvaz.service.ProductService;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/perfume")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @GetMapping("/list")
     public List<ProductResponse> getProductList(){
