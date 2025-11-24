@@ -36,6 +36,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    private Long version;
+
     @Column(name = "product_name", nullable = false)
     private String productName;
 
@@ -49,6 +52,8 @@ public class Product {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
+
+    private Integer stock_quantity;
 
     @Min(0)
     @Max(5)

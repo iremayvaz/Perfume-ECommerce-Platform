@@ -27,6 +27,12 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // optimistic locking otomatik aktif
+    // Hibernate her güncellemede versiyonu kontrol eder;
+    // çakışma olursa hata atar → veri kaybı önlenir
+    @Version
+    private Long version;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;

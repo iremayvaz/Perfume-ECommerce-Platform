@@ -10,6 +10,7 @@ import com.iremayvaz.repository.CartRepository;
 import com.iremayvaz.repository.ProductRepository;
 import com.iremayvaz.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -31,14 +32,12 @@ public class CartService {
 
     @Transactional
     public CartDto addToCart(Long user_id, AddCartItemRequest addCartItemRequest){
-        // Kullanıcı var mı?
-        var user = userRepository.findById(user_id)
-                .orElseThrow(() -> new IllegalArgumentException("Kayıtlı kullanıcı bulunamadı: " + user_id));
-
-        // Öncelikle böyle bir sepet var mı?
-        // Yoksa oluştur.
-        var cart = cartRepository.findById(addCartItemRequest.getCart_id())
-                .orElseGet(() -> {
+        // Kullanıcıya ait böyle bir sepet var mı?
+        var cart = cartRepository.findCartByUserId(user_id)
+                .orElseGet(() -> { // Yoksa oluştur.
+                    // Kullanıcı var mı?
+                    var user = userRepository.findById(user_id)
+                            .orElseThrow(() -> new IllegalArgumentException("Kayıtlı kullanıcı bulunamadı: " + user_id));
                     Cart newCart = new Cart();
                     newCart.setUser(user);
                     return cartRepository.save(newCart);
@@ -47,6 +46,10 @@ public class CartService {
         // Böyle bir ürün var mı?
         var product = productRepository.findById(addCartItemRequest.getProduct_id())
                 .orElseThrow(() -> new IllegalArgumentException("Ürün bulunamadı: " + addCartItemRequest.getProduct_id()));
+
+        if (addCartItemRequest.getQuantity() == null || addCartItemRequest.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Quantity > 0 olmalı.");
+        }
 
         // KULLANICI VAR.
         // KULLANICIYA AİT SEPET VAR.
@@ -64,7 +67,7 @@ public class CartService {
             cartItem.setUnitPriceSnapshot(product.getPrice());
             cartItem.setPriceLockedUntil(LocalDateTime.now().plusDays(1));
 
-            cart.getCartItems().add(cartItem);
+            cart.addItem(cartItem);
         } else { // Aynı ürün var
             cartItem.setQuantity(cartItem.getQuantity() + addCartItemRequest.getQuantity());
 
@@ -75,7 +78,17 @@ public class CartService {
             }
         }
 
-        cartItemRepository.save(cartItem);
+        log.info("BEFORE SLEEP - cartItemId={}, version={}, qty={}, thread={}",
+                cartItem.getId(), cartItem.getVersion(), cartItem.getQuantity(), Thread.currentThread().getName());
+
+        try {
+            Thread.sleep(30000); // 30 saniye beklet, çakışma ihtimali artsın
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        log.info("AFTER SLEEP  - cartItemId={}, version={}, qty={}, thread={}",
+                cartItem.getId(), cartItem.getVersion(), cartItem.getQuantity(), Thread.currentThread().getName());
 
         return toDto(cart);
     }
