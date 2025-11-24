@@ -15,4 +15,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT) // 409
                 .body("Sepet başka bir işlem tarafından güncellendi. Lütfen tekrar deneyin.");
     }
+
+    // Kritik stok
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<String> handleInsufficientStock(InsufficientStockException ex) {
+        return ResponseEntity.status(HttpStatus.INSUFFICIENT_STORAGE)  // 409
+                .body(ex.getMessage());
+    }
 }

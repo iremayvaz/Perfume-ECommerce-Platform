@@ -29,6 +29,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name =  "order_code", nullable = false,  unique = true, length = 32)
+    private String orderCode;
+
     @OneToMany(cascade = CascadeType.ALL,
                 orphanRemoval = true,
                 mappedBy = "order")

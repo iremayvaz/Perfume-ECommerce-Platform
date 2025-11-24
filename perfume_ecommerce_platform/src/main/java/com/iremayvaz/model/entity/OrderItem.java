@@ -29,7 +29,8 @@ import java.time.LocalDateTime;
  * SEPET BİLGİSİ,
  * ÜRÜN BİLGİSİ,
  * MİKTARI,
- * BİRİM FİYAT BİLGİSİ
+ * BİRİM FİYAT BİLGİSİ,
+ * ÜRÜNÜN TOTAL FİYAT BİLGİSİ
  * olur.
  * */
 
@@ -57,6 +58,15 @@ public class OrderItem {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal lineTotal; // quantity * unitPriceSnapshot
+
+    @PrePersist
+    @PreUpdate
+    private void calculateLineTotal() { // Entity ne zaman persist/update olsa lineTotal otomatik güncellenir
+        if (quantity != null && unitPriceSnapshot != null) {
+            this.lineTotal =
+                    unitPriceSnapshot.multiply(BigDecimal.valueOf(quantity));
+        }
+    }
 
     @Column(length=3)
     private String currency = "TRY";

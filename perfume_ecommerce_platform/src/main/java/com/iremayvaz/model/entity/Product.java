@@ -53,6 +53,7 @@ public class Product {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
+    @Column(name = "stock_quantity", nullable = false)
     private Integer stock_quantity;
 
     @Min(0)

@@ -1,5 +1,6 @@
 package com.iremayvaz.service;
 
+import com.iremayvaz.exceptionHandler.InsufficientStockException;
 import com.iremayvaz.model.dto.CategoryDetailResponse;
 import com.iremayvaz.model.dto.ProductDetailResponse;
 import com.iremayvaz.model.dto.ProductResponse;
@@ -10,6 +11,7 @@ import com.iremayvaz.repository.specs.ProductSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -83,4 +85,32 @@ public class ProductService {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    @Transactional
+    public void decreaseStock(Long productId, int quantity) {
+        var product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Ürün bulunamadı: " + productId));
+
+        // İş kuralı: negatif stok yok
+        if (product.getStock_quantity() == null) {
+            throw new IllegalStateException("Ürünün stok bilgisi tanımlı değil: " + productId);
+        }
+
+        if (product.getStock_quantity() < quantity) { // Yeterli stok yok
+            throw new InsufficientStockException(
+                    "Yeterli stok yok. İstenen: " + quantity +
+                            ", mevcut: " + product.getStock_quantity()
+            );
+        }
+            // Entity managed olduğu için transaction commit edilirken Hibernate UPDATE+version artırma yapacak.
+            product.setStock_quantity(product.getStock_quantity() - quantity);
+        }
+
+        // İade / Sipariş iptal için
+        @Transactional
+        public void increaseStock(Long productId, int quantity) {
+            var product = productRepository.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("Ürün bulunamadı: " + productId));
+
+            product.setStock_quantity(product.getStock_quantity() + quantity);
+        }
 }

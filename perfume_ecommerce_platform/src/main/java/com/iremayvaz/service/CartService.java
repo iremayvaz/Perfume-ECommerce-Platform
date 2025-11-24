@@ -1,8 +1,8 @@
 package com.iremayvaz.service;
 
-import com.iremayvaz.model.dto.AddCartItemRequest;
+import com.iremayvaz.model.dto.AddToCartRequest;
 import com.iremayvaz.model.dto.AddCartItemResponse;
-import com.iremayvaz.model.dto.CartDto;
+import com.iremayvaz.model.dto.AddToCartResponse;
 import com.iremayvaz.model.entity.Cart;
 import com.iremayvaz.model.entity.CartItem;
 import com.iremayvaz.repository.CartItemRepository;
@@ -11,8 +11,6 @@ import com.iremayvaz.repository.ProductRepository;
 import com.iremayvaz.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +29,7 @@ public class CartService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CartDto addToCart(Long user_id, AddCartItemRequest addCartItemRequest){
+    public AddToCartResponse addToCart(Long user_id, AddToCartRequest addToCartRequest){
         // Kullanıcıya ait böyle bir sepet var mı?
         var cart = cartRepository.findCartByUserId(user_id)
                 .orElseGet(() -> { // Yoksa oluştur.
@@ -44,10 +42,10 @@ public class CartService {
                 });
 
         // Böyle bir ürün var mı?
-        var product = productRepository.findById(addCartItemRequest.getProduct_id())
-                .orElseThrow(() -> new IllegalArgumentException("Ürün bulunamadı: " + addCartItemRequest.getProduct_id()));
+        var product = productRepository.findById(addToCartRequest.getProduct_id())
+                .orElseThrow(() -> new IllegalArgumentException("Ürün bulunamadı: " + addToCartRequest.getProduct_id()));
 
-        if (addCartItemRequest.getQuantity() == null || addCartItemRequest.getQuantity() <= 0) {
+        if (addToCartRequest.getQuantity() == null || addToCartRequest.getQuantity() <= 0) {
             throw new IllegalArgumentException("Quantity > 0 olmalı.");
         }
 
@@ -58,18 +56,21 @@ public class CartService {
         var cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
                 .orElse(null);
 
+        log.info("BEFORE ADDING - cartItemId={}, version={}, qty={}, thread={}",
+                cartItem.getId(), cartItem.getVersion(), cartItem.getQuantity(), Thread.currentThread().getName());
+
         // Aynı üründen sepette yok. Yeni ekleniyor.
         if(cartItem == null){
             cartItem = new CartItem();
             cartItem.setCart(cart);
             cartItem.setProduct(product);
-            cartItem.setQuantity(addCartItemRequest.getQuantity()); // 1
+            cartItem.setQuantity(addToCartRequest.getQuantity()); // 1
             cartItem.setUnitPriceSnapshot(product.getPrice());
             cartItem.setPriceLockedUntil(LocalDateTime.now().plusDays(1));
 
             cart.addItem(cartItem);
         } else { // Aynı ürün var
-            cartItem.setQuantity(cartItem.getQuantity() + addCartItemRequest.getQuantity());
+            cartItem.setQuantity(cartItem.getQuantity() + addToCartRequest.getQuantity());
 
             if(cartItem.getPriceLockedUntil() != null
                     && LocalDateTime.now().isAfter(cartItem.getPriceLockedUntil())){
@@ -78,41 +79,35 @@ public class CartService {
             }
         }
 
-        log.info("BEFORE SLEEP - cartItemId={}, version={}, qty={}, thread={}",
-                cartItem.getId(), cartItem.getVersion(), cartItem.getQuantity(), Thread.currentThread().getName());
+        cartRepository.save(cart);
 
-        try {
-            Thread.sleep(30000); // 30 saniye beklet, çakışma ihtimali artsın
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
-        log.info("AFTER SLEEP  - cartItemId={}, version={}, qty={}, thread={}",
+        log.info("AFTER ADDING  - cartItemId={}, version={}, qty={}, thread={}",
                 cartItem.getId(), cartItem.getVersion(), cartItem.getQuantity(), Thread.currentThread().getName());
 
         return toDto(cart);
     }
 
-    public ResponseEntity<String> removeFromCart(Long item_id) {
+    public String removeFromCart(Long item_id) {
         return null;
     }
 
-    public ResponseEntity<String> viewCart(Long user_id){
+    public String viewCart(Long user_id){
         return null;
     }
 
     @Transactional
-    public ResponseEntity<String> clearCart(Long user_id){
-        cartRepository.getCartsByUser_Id(user_id).clear();
-        cartItemRepository.deleteByCartId(user_id);
-        return ResponseEntity.status(HttpStatus.GONE).build();
+    public String clearCart(Long user_id){ // Sepeti temizle
+        cartRepository.findCartByUserId(user_id).get() // Sepeti bul
+                    .getCartItems() // Sepetteki ürün listesini al
+                    .clear(); // Temizle
+        return "Silindi.";
     }
 
-    public ResponseEntity<String> updateCartItem(Long item_id){
+    public String updateCartItem(Long item_id){
         return null;
     }
 
-    private CartDto toDto(Cart cart) {
+    private AddToCartResponse toDto(Cart cart) {
         List<AddCartItemResponse> items = cart.getCartItems().stream().map(ci -> {
                     BigDecimal line = ci.getUnitPriceSnapshot()
                     .multiply(BigDecimal.valueOf(ci.getQuantity()));
@@ -132,6 +127,6 @@ public class CartService {
                 .map(AddCartItemResponse::getSubTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return new CartDto(cart.getId(), items, total, false);
+        return new AddToCartResponse(cart.getId(), items, total, false);
     }
 }

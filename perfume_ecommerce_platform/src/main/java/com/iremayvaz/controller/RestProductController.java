@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/perfume")
 @RequiredArgsConstructor
-public class ProductController {
+public class RestProductController {
 
     private final ProductService productService;
 
