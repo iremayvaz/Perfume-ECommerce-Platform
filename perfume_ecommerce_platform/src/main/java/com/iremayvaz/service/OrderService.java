@@ -1,6 +1,5 @@
 package com.iremayvaz.service;
 
-import com.iremayvaz.model.dto.OrderDto;
 import com.iremayvaz.model.dto.PlaceOrderRequest;
 import com.iremayvaz.model.dto.PlaceOrderResponse;
 import com.iremayvaz.model.entity.CartItem;
@@ -10,6 +9,7 @@ import com.iremayvaz.repository.CartRepository;
 import com.iremayvaz.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +24,7 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final ProductService productService;
 
+    @Transactional
     public PlaceOrderResponse placeOrder(Long user_id, PlaceOrderRequest placeOrderRequest){
         var cart = cartRepository.findCartByUserId(user_id) // Kullanıcının sepetini bul
                 .orElseThrow(() -> new NoSuchElementException("Kullanıcıya ait sepet bulunamadı!"));
@@ -65,8 +66,12 @@ public class OrderService {
         // Sipariş oluşturulma saati
         newOrder.setCreatedAt(LocalDateTime.now());
 
-        Order savedOrder = orderRepository.save(newOrder); // siparişi kaydet
-        cart.getCartItems().clear(); // Sipariş oluşturuldu -> sepeti boşalt
+        // siparişi kaydet
+        Order savedOrder = orderRepository.save(newOrder);
+
+        // Sipariş oluşturuldu -> sepeti boşalt
+        cart.getCartItems().clear();
+        cartRepository.save(cart);
 
         PlaceOrderResponse placeOrderResponse = new PlaceOrderResponse(newOrder.getOrderCode()); // Sipariş cevabı
 
