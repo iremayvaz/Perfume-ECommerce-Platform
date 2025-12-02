@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class AddToCartResponse {
     private Long id;
-    private List<AddCartItemResponse> cartItems;
+    private Set<AddCartItemResponse> cartItems;
     private BigDecimal total;
     private boolean pricesRefreshed;
 }

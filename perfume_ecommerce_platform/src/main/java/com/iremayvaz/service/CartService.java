@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,11 +54,14 @@ public class CartService {
         // KULLANICIYA AİT SEPET VAR.
         // KULLANICININ ALMAK İSTEDİĞİ ÜRÜN VAR
         // Peki kullanıcının sepetinde aynı üründen var mı?
-        var cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
-                .orElse(null);
+        var cartItemOpt = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
 
-        log.info("BEFORE ADDING - cartItemId={}, version={}, qty={}, thread={}",
-                cartItem.getId(), cartItem.getVersion(), cartItem.getQuantity(), Thread.currentThread().getName());
+        CartItem cartItem = cartItemOpt.orElse(null);
+
+        if (cartItem != null) {
+            log.info("BEFORE ADDING - cartItemId={}, version={}, qty={}, thread={}",
+                    cartItem.getId(), cartItem.getVersion(), cartItem.getQuantity(), Thread.currentThread().getName());
+        }
 
         // Aynı üründen sepette yok. Yeni ekleniyor.
         if(cartItem == null){
@@ -87,28 +91,64 @@ public class CartService {
         return toDto(cart);
     }
 
-    public String removeFromCart(Long item_id) {
-        return null;
+    @Transactional
+    // Sepetten bir ürünü tüm adetleriyle silmek (Çöp kutusu tuşuna basılıncaki davranış)
+    public String removeFromCart(Long user_id, Long item_id) {
+        var cartItem = cartItemRepository.findByUserIdAndItemId(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
+                .orElseThrow(() -> new IllegalArgumentException("No item in this cart"));
+
+        String productName = cartItem.getProduct().getProductName();
+        cartItemRepository.delete(cartItem); // ürünü sil
+
+        return productName + " is removed from cart.";
     }
 
-    public String viewCart(Long user_id){
-        return null;
+    // Sepetteki tüm ürünleri görüntüle
+    public Set<AddCartItemResponse> viewCart(Long user_id){
+        var cart = cartRepository.findCartByUserId(user_id) // Kullanıcının sepetini bul
+                .orElseThrow(() -> new IllegalArgumentException("Cart is not found"));
+        AddToCartResponse addToCartResponse = toDto(cart);
+        Set<AddCartItemResponse> addCartItemResponse = addToCartResponse.getCartItems(); // Sepetteki ürünleri al
+        return addCartItemResponse;
     }
 
     @Transactional
+    // Tüm sepeti temizle
     public String clearCart(Long user_id){ // Sepeti temizle
-        cartRepository.findCartByUserId(user_id).get() // Sepeti bul
-                    .getCartItems() // Sepetteki ürün listesini al
-                    .clear(); // Temizle
-        return "Silindi.";
+        var cart = cartRepository.findCartByUserId(user_id) // Sepeti bul
+                .orElseThrow(() -> new IllegalArgumentException("Cart is not found"));
+
+        cart.getCartItems() // Sepetteki ürün listesini al
+                .clear();   // Temizle
+
+        return "Cart cleared.";
     }
 
-    public String updateCartItem(Long item_id){
-        return null;
+    @Transactional
+    // Sepetteki ürünü yeni miktarla güncelle
+    public AddToCartResponse updateCartItem(Long user_id, Long item_id, int quantity){
+        var cartItem = cartItemRepository.findByUserIdAndItemId(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
+                .orElseThrow(() -> new IllegalArgumentException("No item in this cart"));
+
+        // Front kısmında - veya + butonuna tıklanılmasına göre - veya + miktar gönderilecek!
+        if (quantity <= 0) {
+            cartItemRepository.delete(cartItem);
+        } else {
+            cartItem.setQuantity(cartItem.getQuantity() + quantity); // Önceki miktar + yeni miktar
+            cartItemRepository.save(cartItem);
+        }
+
+        // Tüm sepeti görüntüleyeceğiz
+        var cart = cartRepository.findCartByUserId(user_id)
+                .orElseThrow(() -> new IllegalArgumentException("")); // sepeti bul
+
+        AddToCartResponse addToCartResponse = toDto(cart);
+        return addToCartResponse;
     }
 
+    // Sepette görüntülecek DTO
     private AddToCartResponse toDto(Cart cart) {
-        List<AddCartItemResponse> items = cart.getCartItems().stream().map(ci -> {
+        Set<AddCartItemResponse> items = cart.getCartItems().stream().map(ci -> {
                     BigDecimal line = ci.getUnitPriceSnapshot()
                     .multiply(BigDecimal.valueOf(ci.getQuantity()));
             return new AddCartItemResponse(
@@ -121,7 +161,7 @@ public class CartService {
                     ci.getPriceLockedUntil(),
                     ci.getCurrency()
             );
-        }).toList();
+        }).collect(Collectors.toSet());
 
         BigDecimal total = items.stream()
                 .map(AddCartItemResponse::getSubTotal)
