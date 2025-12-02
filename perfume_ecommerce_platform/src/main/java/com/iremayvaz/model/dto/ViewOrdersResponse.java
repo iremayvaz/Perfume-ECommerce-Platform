@@ -7,19 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-
-/**
- * Sipariş oluşturduktan sonra
- * sistem sipariş kodu verir
- * */
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-// Sipariş oluşturduktan sonra sistem cevabı
-public class PlaceOrderResponse {
+public class ViewOrdersResponse {
     private String orderCode;
+    private LocalDateTime createdAt;
     private OrderState orderState;
     private BigDecimal totalPrice;
 }

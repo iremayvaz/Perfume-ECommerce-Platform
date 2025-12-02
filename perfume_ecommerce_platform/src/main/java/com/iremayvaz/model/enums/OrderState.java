@@ -2,12 +2,10 @@ package com.iremayvaz.model.enums;
 
 // SİPARİŞ DURUMLARI
 public enum OrderState {
-    PENDING_PAYMENT, // ödeme bekliyor
     CREATED, // oluşturuldu
-    DELIVERED, // teslim edildi
-    PAID, // ödendi
-    CANCELED, // iptal edildi (user tarafından)
+    PREPARING, // hazırlanıyor
     PREPARED, // hazırlandı
-    CANCELED_PAYMENT, // ödeme reddedildi (ör. yetersiz bakiye, int alışverişe kapalı vs.)
-    PREPARING // hazırlanıyor
+    DELIVERED, // teslim edildi
+    CANCELED, // iptal edildi (user tarafından)
+    CANCELED_PAYMENT // ödeme reddedildi (ör. yetersiz bakiye, int alışverişe kapalı vs.)
 }

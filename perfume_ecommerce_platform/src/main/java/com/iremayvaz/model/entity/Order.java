@@ -1,8 +1,11 @@
 package com.iremayvaz.model.entity;
 
+import com.iremayvaz.model.enums.OrderState;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +34,14 @@ public class Order {
 
     @Column(name =  "order_code", nullable = false,  unique = true, length = 32)
     private String orderCode;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderState orderState;
+
+    @Column(nullable = false)
+    @Positive
+    private BigDecimal totalPrice;
 
     @OneToMany(cascade = CascadeType.ALL,
                 orphanRemoval = true,
