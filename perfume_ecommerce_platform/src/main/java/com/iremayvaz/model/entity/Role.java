@@ -3,6 +3,7 @@ package com.iremayvaz.model.entity;
 import com.iremayvaz.model.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 
 @Entity
@@ -21,7 +22,7 @@ import lombok.*;
  * */
 
 // Role bilgileri
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,4 +30,10 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name", nullable = false)
     private RoleName roleName;
+
+    @Override
+    public String getAuthority() {
+        // ROLE_ADMIN, ROLE_USER formatında döndürüyoruz
+        return "ROLE_" + roleName.name();
+    }
 }

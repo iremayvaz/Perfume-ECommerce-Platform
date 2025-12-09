@@ -1,8 +1,10 @@
 package com.iremayvaz.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +36,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
+    @Email(message="Geçerli bir e-posta girin")
     private String email;
 
     @Column(name = "phone_number", nullable = false)
@@ -48,7 +51,7 @@ public class User {
     @Column(name = "bcrypted_password", nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)              // Rol bilgisi LOGIN'de çekilsin. Sonra gereksiz
+    @ManyToMany(fetch = FetchType.EAGER)              // Rol bilgisi LOGIN'de çekilsin. Sonra gereksiz
     @JoinTable(name = "user_roles",
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
