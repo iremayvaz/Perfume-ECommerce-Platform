@@ -1,45 +1,168 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Sipariş Yönetimi</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Sipariş Listesi</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#db2777",
+                        secondary: "#fce7f3",
+                        "background-light": "#fdf2f8",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        display: ["'Playfair Display'", "serif"],
+                        sans: ["'Inter'", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        xl: "1rem",
+                        "2xl": "1.5rem",
+                    },
+                },
+            },
+        };
+    </script>
 </head>
-<body>
-<div class="container mt-5">
-    <h2>Sipariş Geçmişi</h2>
 
-    <a th:href="@{/admin/dashboard}" class="btn btn-secondary">
-        ← Dashboard'a Dön
-    </a>
+<body class="bg-background-light text-gray-800 font-sans transition-colors duration-300 min-h-screen">
 
-    <table class="table table-striped mt-3">
-        <thead class="table-dark">
-        <tr>
-            <th>Sipariş No</th>
-            <th>Müşteri</th>
-            <th>Tarih</th>
-            <th>Tutar</th>
-            <th>Durum</th>
-            <th>İşlem</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="order : ${orders}">
-            <td th:text="${order.id}">#123</td>
-            <td th:text="${order.user.firstName} + ' ' + ${order.user.lastName}">Ahmet Yılmaz</td>
-            <td th:text="${order.createdAt}">01.01.2023</td>
-            <td th:text="${order.totalPrice} + ' TL'">500 TL</td>
-            <td>
-                    <span class="badge bg-secondary"
-                          th:classappend="${order.state.name() == 'TESLIM_EDILDI' ? 'bg-success' : (order.state.name() == 'IPTAL_EDILDI' ? 'bg-danger' : 'bg-warning')}"
-                          th:text="${order.state}">HAZIRLANIYOR</span>
-            </td>
-            <td>
-                <a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-info btn-sm">Yönet</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<!-- TOP NAV -->
+<nav class="bg-surface-light shadow-sm border-b border-pink-100 px-6 py-3 flex items-center justify-between sticky top-0 z-30">
+    <div class="flex items-center gap-3">
+        <span class="material-icons-round text-primary text-3xl">local_florist</span>
+        <span class="font-display font-bold text-xl text-gray-900 tracking-wide">ParfümPaneli</span>
+    </div>
+    <div class="flex items-center gap-4">
+        <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">A</div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- HEADER -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-2">Sipariş Listesi</h1>
+            <p class="text-gray-500">Tüm müşteri siparişlerini buradan yönetebilirsiniz.</p>
+        </div>
+
+        <a th:href="@{/admin/dashboard}"
+           class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-600 px-5 py-2.5 rounded-lg shadow-sm hover:bg-gray-50 transition-all font-medium text-sm group">
+            <span class="material-icons-round text-gray-400 group-hover:text-primary transition-colors text-lg">arrow_back</span>
+            Dashboard'a Dön
+        </a>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="bg-surface-light rounded-xl shadow-lg border border-pink-100 overflow-hidden">
+
+        <!-- TOOLBAR (UI) -->
+        <div class="p-5 border-b border-pink-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full sm:w-72">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-icons-round text-gray-400 text-lg">search</span>
+                <input class="w-full pl-10 pr-4 py-2 rounded-lg border-gray-200 bg-gray-50 text-gray-800 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+                       placeholder="Sipariş veya müşteri ara..." type="text"/>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="button" class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                    <span class="material-icons-round text-lg">filter_list</span> Filtrele
+                </button>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                <tr class="bg-pink-50/50 text-gray-500 text-xs uppercase tracking-wider font-semibold border-b border-pink-100">
+                    <th class="px-6 py-4">Sipariş No</th>
+                    <th class="px-6 py-4">Müşteri</th>
+                    <th class="px-6 py-4">Tarih</th>
+                    <th class="px-6 py-4">Tutar</th>
+                    <th class="px-6 py-4">Durum</th>
+                    <th class="px-6 py-4 text-right">İşlem</th>
+                </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100">
+                <tr class="hover:bg-pink-50/30 transition-colors group" th:each="order : ${orders}">
+
+                    <td class="px-6 py-4 font-medium text-primary" th:text="'#' + ${order.id}">#123</td>
+
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-xs">
+                                <span th:text="${#strings.substring(order.user.firstName,0,1)} + ${#strings.substring(order.user.lastName,0,1)}">AA</span>
+                            </div>
+                            <span class="font-medium text-gray-900"
+                                  th:text="${order.user.firstName} + ' ' + ${order.user.lastName}">Ahmet Yılmaz</span>
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        <div class="flex flex-col">
+                            <span th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy')}">01 Oca 2025</span>
+                            <span class="text-xs text-gray-400" th:text="${#temporals.format(order.createdAt, 'HH:mm')}">12:45</span>
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-4 font-medium text-gray-900" th:text="${order.totalPrice} + ' TL'">500 TL</td>
+
+                    <td class="px-6 py-4">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border"
+                  th:text="${order.state}"
+                  th:classappend="
+                    ${order.state.name() == 'DELIVERED' || order.state.name() == 'COMPLETED'}
+                      ? ' bg-green-100 text-green-700 border-green-200'
+                      : (
+                        ${order.state.name() == 'SHIPPED'}
+                          ? ' bg-blue-100 text-blue-700 border-blue-200'
+                          : (
+                            ${order.state.name() == 'PENDING'}
+                              ? ' bg-gray-100 text-gray-700 border-gray-200'
+                              : (
+                                ${order.state.name() == 'CANCELED' || order.state.name() == 'CANCELLED'}
+                                  ? ' bg-red-100 text-red-700 border-red-200'
+                                  : ' bg-amber-100 text-amber-700 border-amber-200'
+                              )
+                          )
+                      )
+                  ">
+              PENDING
+            </span>
+                    </td>
+
+                    <td class="px-6 py-4 text-right">
+                        <a th:href="@{/admin/orders/{id}(id=${order.id})}"
+                           class="bg-primary hover:bg-pink-700 text-white text-xs font-medium px-4 py-2 rounded-lg shadow-sm shadow-pink-200 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-primary inline-flex items-center justify-center">
+                            Yönet
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
+      <span class="text-xs text-gray-500">
+        Toplam <span class="font-medium text-gray-900" th:text="${#lists.size(orders)}">0</span> sipariş gösteriliyor
+      </span>
+        </div>
+
+    </div>
+</main>
+
 </body>
 </html>

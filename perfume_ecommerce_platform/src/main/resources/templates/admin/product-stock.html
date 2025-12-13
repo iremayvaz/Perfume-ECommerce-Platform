@@ -1,43 +1,145 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Stok Güncelle</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#ec4899",          // Pink 500
+                        "primary-dark": "#db2777",   // Pink 600 (hover)
+                        "background-light": "#fdf2f8",
+                        "card-light": "#ffffff",
+                        "subtle-light": "#fce7f3",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: { DEFAULT: "0.5rem" },
+                },
+            },
+        };
+    </script>
+
+    <style>
+        body { transition: background-color 0.3s ease, color 0.3s ease; }
+    </style>
 </head>
-<body>
-<div class="container mt-4">
 
-    <a th:href="@{/admin/dashboard}" class="btn btn-secondary mb-3">&larr; Dashboard'a Dön</a>
+<body class="bg-background-light text-gray-800 font-sans antialiased min-h-screen flex items-center justify-center p-4">
 
-    <h2>Stok Güncelle</h2>
+<main class="w-full max-w-lg bg-card-light rounded-2xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300">
 
-    <div class="card mt-3">
-        <div class="card-body">
-            <p><strong>Marka:</strong> <span th:text="${product.brand}"></span></p>
-            <p><strong>Parfüm Adı:</strong> <span th:text="${product.name}"></span></p>
-            <p><strong>Mevcut Stok:</strong>
-                <span th:text="${product.stockQuantity}"></span>
-            </p>
+    <!-- HEADER -->
+    <div class="px-8 pt-8 pb-6">
+        <a th:href="@{/admin/dashboard}"
+           class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors duration-200 mb-6 group">
+            <span class="material-icons-round text-lg mr-1 group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            Dashboard'a Dön
+        </a>
 
-            <form th:action="@{'/admin/products/' + ${product.id} + '/stock'}"
-                  method="post">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Stok Güncelle</h1>
+            <div class="p-3 bg-subtle-light rounded-full">
+                <span class="material-icons-round text-primary text-2xl">inventory_2</span>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label for="amount" class="form-label">
-                        Eklenecek Miktar
-                    </label>
-                    <input type="number" id="amount" name="amount"
-                           class="form-control" min="1" required>
+        <p class="mt-2 text-sm text-gray-500">Seçili ürün için envanter yönetimi</p>
+    </div>
+
+    <!-- PRODUCT INFO -->
+    <div class="px-8 py-2">
+        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+            <div class="grid grid-cols-1 gap-y-4">
+
+                <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                    <span class="text-sm font-medium text-gray-500">Marka</span>
+                    <span class="text-base font-semibold text-gray-900 flex items-center">
+                        <span class="material-icons-round text-sm mr-1 text-primary opacity-70">branding_watermark</span>
+                        <span th:text="${product.brand}">LORIS</span>
+                    </span>
                 </div>
 
-                <button type="submit" class="btn btn-success">Stok Artır</button>
-                <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary">
-                    İptal
-                </a>
-            </form>
+                <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                    <span class="text-sm font-medium text-gray-500">Parfüm Adı</span>
+                    <span class="text-base font-semibold text-gray-900 flex items-center">
+                        <span class="material-icons-round text-sm mr-1 text-primary opacity-70">local_offer</span>
+                        <span th:text="${product.name}">K129</span>
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-medium text-gray-500">Mevcut Stok</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-bold bg-pink-100 text-pink-800">
+                        <span th:text="${product.stockQuantity}">2</span>&nbsp;Adet
+                    </span>
+                </div>
+
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- FORM -->
+    <div class="px-8 pt-6 pb-8">
+        <form th:action="@{'/admin/products/' + ${product.id} + '/stock'}"
+              method="post">
+
+            <div class="mb-6">
+                <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">
+                    Eklenecek Miktar
+                </label>
+
+                <div class="relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="material-icons-round text-gray-400 text-lg">add_circle_outline</span>
+                    </div>
+                    <input id="amount"
+                           name="amount"
+                           type="number"
+                           min="1"
+                           required
+                           placeholder="0"
+                           class="block w-full pl-10 pr-3 py-3 border-gray-300 rounded-lg focus:ring-primary focus:border-primary bg-white placeholder-gray-400 sm:text-sm transition-colors duration-200"/>
+                </div>
+
+                <p class="mt-2 text-xs text-gray-500">
+                    Yeni stok miktarı otomatik olarak hesaplanacaktır.
+                </p>
+            </div>
+
+            <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                <a th:href="@{/admin/dashboard}"
+                   class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200">
+                    İptal
+                </a>
+
+                <button type="submit"
+                        class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200">
+                    <span class="material-icons-round text-lg mr-2">save</span>
+                    Stok Artır
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="h-1.5 w-full bg-gradient-to-r from-pink-300 via-primary to-pink-600"></div>
+</main>
+
 </body>
 </html>

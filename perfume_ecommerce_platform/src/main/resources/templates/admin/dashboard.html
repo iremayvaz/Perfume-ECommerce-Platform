@@ -1,128 +1,252 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body class="bg-light">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Genel Bakış Admin Paneli</title>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="#">Parfüm Admin</a>
-        <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/admin/products">Ürünler</a>
-            <a class="nav-link" href="/admin/orders">Siparişler</a>
-            <a class="nav-link btn btn-danger ms-3 text-white" href="/logout">Çıkış</a>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #db2777; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #be185d; }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+<!-- NAVBAR (tasarımla aynı: beyaz/soft) -->
+<nav class="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-50 border-b border-pink-100 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+
+            <div class="flex items-center gap-3">
+                <div class="bg-pink-50 dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-pink-100 dark:border-gray-700">
+                    <span class="material-icons-round text-primary text-2xl">local_florist</span>
+                </div>
+                <span class="font-bold text-xl tracking-wide text-gray-800 dark:text-white">Parfüm Admin</span>
+            </div>
+
+            <div class="flex items-center space-x-6 text-sm font-medium">
+                <a class="text-gray-500 hover:text-primary dark:text-gray-300 dark:hover:text-white transition-colors"
+                   th:href="@{/admin/products}">
+                    Ürünler
+                </a>
+
+                <a class="text-gray-500 hover:text-primary dark:text-gray-300 dark:hover:text-white transition-colors"
+                   th:href="@{/admin/orders}">
+                    Siparişler
+                </a>
+
+                <a class="flex items-center gap-1 text-gray-500 hover:text-red-500 dark:text-gray-300 dark:hover:text-red-400 transition-colors"
+                   th:href="@{/logout}">
+                    <span>Çıkış</span>
+                    <span class="material-icons-round text-sm">logout</span>
+                </a>
+            </div>
+
         </div>
     </div>
 </nav>
 
-<div class="container">
-    <h2 class="mb-4">Genel Bakış</h2>
+<!-- MAIN -->
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <div class="row g-4 mb-4">
-        <div class="col-md-3"> <div class="card text-white bg-success h-100">
-            <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-lira-sign"></i> Toplam Ciro</h5>
-                <p class="card-text fs-3 fw-bold" th:text="${totalSales} + ' TL'">0 TL</p>
+    <!-- HEADER -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="w-2 h-8 bg-primary rounded-full block"></span>
+            Genel Bakış
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-1 ml-4 text-sm">
+            Mağaza performansınızı ve stok durumunu buradan takip edin.
+        </p>
+    </header>
+
+    <!-- TOP STATS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+        <!-- Toplam Ciro -->
+        <div class="bg-gradient-to-br from-primary to-pink-700 rounded-xl shadow-lg p-6 text-white transform hover:scale-[1.02] transition-transform duration-200 relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10 transform translate-x-2 -translate-y-2">
+                <span class="material-icons-round text-9xl">payments</span>
             </div>
-        </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card text-white bg-primary h-100">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-shopping-cart"></i> Toplam Sipariş</h5>
-                    <p class="card-text fs-3 fw-bold" th:text="${totalOrders}">0</p>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-2 opacity-90">
+                    <span class="material-icons-round text-sm">currency_lira</span>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Toplam Ciro</span>
                 </div>
+                <div class="text-3xl font-bold" th:text="${totalSales} + ' TL'">0 TL</div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card text-white bg-warning h-100">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-box"></i> Ürün Çeşidi</h5>
-                    <p class="card-text fs-3 fw-bold text-dark" th:text="${totalProducts}">0</p>
+        <!-- Toplam Sipariş -->
+        <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-[1.02] transition-transform duration-200 relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10 transform translate-x-2 -translate-y-2">
+                <span class="material-icons-round text-9xl">shopping_cart</span>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-2 opacity-90">
+                    <span class="material-icons-round text-sm">shopping_cart</span>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Toplam Sipariş</span>
                 </div>
+                <div class="text-3xl font-bold" th:text="${totalOrders}">0</div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card text-white bg-info h-100">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-users"></i> Müşteriler</h5>
-                    <p class="card-text fs-3 fw-bold text-dark" th:text="${totalUsers}">0</p>
+        <!-- Ürün Çeşidi -->
+        <div class="bg-gradient-to-br from-rose-400 to-orange-500 rounded-xl shadow-lg p-6 text-white transform hover:scale-[1.02] transition-transform duration-200 relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10 transform translate-x-2 -translate-y-2">
+                <span class="material-icons-round text-9xl">inventory_2</span>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-2 opacity-90">
+                    <span class="material-icons-round text-sm">category</span>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Ürün Çeşidi</span>
                 </div>
+                <div class="text-3xl font-bold" th:text="${totalProducts}">0</div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card text-white h-100" th:classappend="${lowStockCount > 0 ? 'bg-danger' : 'bg-secondary'}">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fas fa-exclamation-triangle"></i> Kritik Stok</h5>
-                    <p class="card-text fs-3 fw-bold" th:text="${lowStockCount}">0</p>
-                    <small th:if="${lowStockCount > 0}" class="text-white">Hemen stok yenile!</small>
-                    <small th:if="${lowStockCount == 0}" class="text-light">Her şey yolunda</small>
+        <!-- Müşteriler -->
+        <div class="bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-[1.02] transition-transform duration-200 relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10 transform translate-x-2 -translate-y-2">
+                <span class="material-icons-round text-9xl">group</span>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-2 opacity-90">
+                    <span class="material-icons-round text-sm">groups</span>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Müşteriler</span>
+                </div>
+                <div class="text-3xl font-bold" th:text="${totalUsers}">0</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- KRİTİK STOK KARTI (tasarımla aynı görünüm + dinamik değer) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="lg:col-span-1">
+            <div class="bg-red-600 text-white rounded-xl shadow-lg p-6 h-full flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 opacity-20">
+                    <span class="material-icons-round text-9xl">warning</span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-icons-round">warning</span>
+                        <span class="font-bold uppercase tracking-wider text-sm">Kritik Stok</span>
+                    </div>
+
+                    <div class="text-5xl font-extrabold mb-1" th:text="${lowStockCount}">0</div>
+
+                    <p class="text-red-100 text-sm font-medium" th:if="${lowStockCount > 0}">
+                        Hemen stok yenile!
+                    </p>
+                    <p class="text-red-100 text-sm font-medium" th:if="${lowStockCount == 0}">
+                        Her şey yolunda.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mb-5" th:if="${lowStockCount > 0}">
-        <div class="col-12">
-            <div class="card border-danger shadow-sm">
-                <div class="card-header bg-danger text-white fw-bold">
-                    <i class="fas fa-fire me-2"></i>Dikkat: Tükenmek Üzere Olan Ürünler (3 ve Altı)
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-striped mb-0">
-                        <thead>
-                        <tr>
-                            <th>Marka</th>
-                            <th>Ürün Adı</th>
-                            <th>Kalan Stok</th>
-                            <th>İşlem</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="p : ${lowStockProducts}">
-                            <td th:text="${p.brand}">Brand</td>
-                            <td th:text="${p.name}">Name</td>
-                            <td class="text-danger fw-bold fs-5" th:text="${p.stockQuantity}">3</td>
-                            <td>
-                                <a class="btn btn-outline-light btn-sm"
-                                   th:href="@{'/admin/products/' + ${product.id} + '/stock'}">
-                                    + Stok Ekle
-                                </a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header fw-bold">Hızlı İşlemler</div>
-                <div class="card-body">
-                    <a href="/admin/products/new" class="btn btn-outline-primary w-100 mb-2">Yeni Ürün Ekle</a>
-                    <a href="/admin/orders" class="btn btn-outline-secondary w-100">Siparişleri Yönet</a>
-                </div>
+    <!-- TÜKENMEK ÜZERE OLAN ÜRÜNLER TABLOSU (tasarımla aynı + th:each) -->
+    <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-md border border-border-light dark:border-border-dark overflow-hidden mb-8"
+         th:if="${lowStockCount > 0}">
+        <div class="bg-gradient-to-r from-red-500 to-rose-600 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2 text-white">
+                <span class="material-icons-round animate-pulse">timer</span>
+                <h3 class="font-bold text-lg">Dikkat: Tükenmek Üzere Olan Ürünler (3 ve Altı)</h3>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="alert alert-info h-100">
-                <h5><i class="fas fa-info-circle"></i> Sistem Mesajı</h5>
-                <p>Admin paneli başarıyla kuruldu! React tarafına geçmeden önce buradan örnek veriler (ürün, sipariş) oluşturmayı unutma.</p>
-            </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                <tr class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-semibold">
+                    <th class="px-6 py-4">Marka</th>
+                    <th class="px-6 py-4">Ürün Adı</th>
+                    <th class="px-6 py-4">Kalan Stok</th>
+                    <th class="px-6 py-4 text-right">İşlem</th>
+                </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                <tr class="hover:bg-pink-50 dark:hover:bg-gray-700/50 transition-colors"
+                    th:each="p : ${lowStockProducts}">
+                    <td class="px-6 py-4 font-medium text-gray-900 dark:text-white"
+                        th:text="${p.brand}">Brand</td>
+
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300"
+                        th:text="${p.name}">Name</td>
+
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                              th:text="${p.stockQuantity}">3</span>
+                    </td>
+
+                    <td class="px-6 py-4 text-right">
+                        <a class="text-xs border border-red-400 text-red-500 hover:bg-red-500 hover:text-white dark:border-red-400 dark:text-red-400 dark:hover:bg-red-600 dark:hover:text-white px-3 py-1.5 rounded transition-all duration-200 inline-flex items-center gap-1"
+                           th:href="@{'/admin/products/' + ${p.id} + '/stock'}">
+                            <span class="material-icons-round text-sm">add</span>
+                            Stok Ekle
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
+
+    <!-- ALT: Hızlı İşlemler + Sistem Mesajı (tasarımla aynı + linkler th:href) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-md border border-border-light dark:border-border-dark p-6">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">
+                Hızlı İşlemler
+            </h3>
+            <div class="flex flex-col gap-3">
+                <a class="w-full py-3 px-4 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white dark:text-pink-400 dark:border-pink-500 dark:hover:bg-primary transition-all duration-200 flex items-center justify-center gap-2 font-medium"
+                   th:href="@{/admin/products/new}">
+                    <span class="material-icons-round">add_circle_outline</span>
+                    Yeni Ürün Ekle
+                </a>
+
+                <a class="w-full py-3 px-4 rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-800 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-all duration-200 flex items-center justify-center gap-2 font-medium"
+                   th:href="@{/admin/orders}">
+                    <span class="material-icons-round">list_alt</span>
+                    Siparişleri Yönet
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-cyan-50 dark:bg-cyan-900/20 rounded-xl shadow-sm border border-cyan-100 dark:border-cyan-800 p-6 flex flex-col justify-center">
+            <div class="flex items-center gap-2 text-cyan-800 dark:text-cyan-300 mb-3">
+                <span class="material-icons-round">info</span>
+                <h3 class="font-bold text-lg">Sistem Mesajı</h3>
+            </div>
+            <p class="text-cyan-900 dark:text-cyan-100 text-sm leading-relaxed">
+                Admin paneli başarıyla kuruldu! React tarafına geçmeden önce buradan örnek veriler (ürün, sipariş) oluşturmayı unutma.
+            </p>
+        </div>
+
+    </div>
+
+</main>
+
+<footer class="mt-auto py-6 bg-surface-light dark:bg-surface-dark border-t border-border-light dark:border-border-dark text-center">
+    <p class="text-sm text-gray-500 dark:text-gray-400">© 2025 Parfüm Admin Paneli. Tüm hakları saklıdır.</p>
+</footer>
 
 </body>
 </html>
