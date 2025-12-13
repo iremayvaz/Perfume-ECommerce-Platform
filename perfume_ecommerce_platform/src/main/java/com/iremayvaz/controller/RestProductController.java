@@ -1,7 +1,7 @@
 package com.iremayvaz.controller;
 
-import com.iremayvaz.model.dto.ProductDetailResponse;
-import com.iremayvaz.model.dto.ProductResponse;
+import com.iremayvaz.model.dto.response.ProductDetailResponse;
+import com.iremayvaz.model.dto.response.ProductResponse;
 import com.iremayvaz.service.ProductService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

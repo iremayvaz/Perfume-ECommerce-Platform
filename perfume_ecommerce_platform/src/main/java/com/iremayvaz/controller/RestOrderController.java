@@ -1,9 +1,9 @@
 package com.iremayvaz.controller;
 
-import com.iremayvaz.model.dto.PlaceOrderRequest;
-import com.iremayvaz.model.dto.PlaceOrderResponse;
-import com.iremayvaz.model.dto.ViewOrderDetailResponse;
-import com.iremayvaz.model.dto.ViewOrdersResponse;
+import com.iremayvaz.model.dto.request.PlaceOrderRequest;
+import com.iremayvaz.model.dto.response.PlaceOrderResponse;
+import com.iremayvaz.model.dto.response.ViewOrderDetailResponse;
+import com.iremayvaz.model.dto.response.ViewOrdersResponse;
 import com.iremayvaz.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

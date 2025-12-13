@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="#">Parfüm Admin</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/admin/products">Ürünler</a>
+            <a class="nav-link" href="/admin/orders">Siparişler</a>
+            <a class="nav-link btn btn-danger ms-3 text-white" href="/logout">Çıkış</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 class="mb-4">Genel Bakış</h2>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3"> <div class="card text-white bg-success h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-lira-sign"></i> Toplam Ciro</h5>
+                <p class="card-text fs-3 fw-bold" th:text="${totalSales} + ' TL'">0 TL</p>
+            </div>
+        </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-shopping-cart"></i> Toplam Sipariş</h5>
+                    <p class="card-text fs-3 fw-bold" th:text="${totalOrders}">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-box"></i> Ürün Çeşidi</h5>
+                    <p class="card-text fs-3 fw-bold text-dark" th:text="${totalProducts}">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-users"></i> Müşteriler</h5>
+                    <p class="card-text fs-3 fw-bold text-dark" th:text="${totalUsers}">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white h-100" th:classappend="${lowStockCount > 0 ? 'bg-danger' : 'bg-secondary'}">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-exclamation-triangle"></i> Kritik Stok</h5>
+                    <p class="card-text fs-3 fw-bold" th:text="${lowStockCount}">0</p>
+                    <small th:if="${lowStockCount > 0}" class="text-white">Hemen stok yenile!</small>
+                    <small th:if="${lowStockCount == 0}" class="text-light">Her şey yolunda</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5" th:if="${lowStockCount > 0}">
+        <div class="col-12">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white fw-bold">
+                    <i class="fas fa-fire me-2"></i>Dikkat: Tükenmek Üzere Olan Ürünler (3 ve Altı)
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th>Marka</th>
+                            <th>Ürün Adı</th>
+                            <th>Kalan Stok</th>
+                            <th>İşlem</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="p : ${lowStockProducts}">
+                            <td th:text="${p.brand}">Brand</td>
+                            <td th:text="${p.name}">Name</td>
+                            <td class="text-danger fw-bold fs-5" th:text="${p.stockQuantity}">3</td>
+                            <td>
+                                <a class="btn btn-outline-light btn-sm"
+                                   th:href="@{'/admin/products/' + ${product.id} + '/stock'}">
+                                    + Stok Ekle
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header fw-bold">Hızlı İşlemler</div>
+                <div class="card-body">
+                    <a href="/admin/products/new" class="btn btn-outline-primary w-100 mb-2">Yeni Ürün Ekle</a>
+                    <a href="/admin/orders" class="btn btn-outline-secondary w-100">Siparişleri Yönet</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="alert alert-info h-100">
+                <h5><i class="fas fa-info-circle"></i> Sistem Mesajı</h5>
+                <p>Admin paneli başarıyla kuruldu! React tarafına geçmeden önce buradan örnek veriler (ürün, sipariş) oluşturmayı unutma.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

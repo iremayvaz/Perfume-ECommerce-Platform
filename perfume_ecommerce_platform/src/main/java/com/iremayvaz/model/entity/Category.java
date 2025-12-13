@@ -35,7 +35,7 @@ public class Category {
 
     @Column(name = "concentration_name")
     @Enumerated(EnumType.STRING)
-    private Concentration concentrationName; // EDT, EDP, PARFUME vb.
+    private Concentration concentration; // EDT, EDP, PARFUME vb.
 
     @Column(name = "season")
     @Enumerated(EnumType.STRING)

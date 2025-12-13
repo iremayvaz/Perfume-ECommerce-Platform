@@ -26,10 +26,10 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "note_name", nullable = false)
-    private String noteName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "note_type", nullable = false)
-    private NoteType noteType;
+    @Column(name = "type", nullable = false)
+    private NoteType type;
 }

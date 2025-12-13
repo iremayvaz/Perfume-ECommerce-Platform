@@ -28,12 +28,12 @@ public class Role implements GrantedAuthority {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_name", nullable = false)
-    private RoleName roleName;
+    @Column(name = "name", nullable = false)
+    private RoleName name;
 
     @Override
     public String getAuthority() {
         // ROLE_ADMIN, ROLE_USER formatında döndürüyoruz
-        return "ROLE_" + roleName.name();
+        return "ROLE_" + name.name();
     }
 }

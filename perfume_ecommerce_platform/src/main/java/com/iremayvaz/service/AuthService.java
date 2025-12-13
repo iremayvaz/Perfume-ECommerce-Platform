@@ -1,7 +1,7 @@
 package com.iremayvaz.service;
 
-import com.iremayvaz.model.dto.DtoUser;
-import com.iremayvaz.model.dto.DtoUserInsert;
+import com.iremayvaz.model.dto.response.DtoUser;
+import com.iremayvaz.model.dto.request.DtoUserInsert;
 import com.iremayvaz.model.entity.RefreshToken;
 import com.iremayvaz.model.entity.User;
 import com.iremayvaz.model.enums.RoleName;
@@ -54,7 +54,7 @@ public class AuthService {
         user.setPhoneNumber(dtoUserInsert.getPhoneNum());
 
         // Default ROLE_USER ata
-        var userRole = roleRepository.findByRoleName(RoleName.USER)
+        var userRole = roleRepository.findByName(RoleName.USER)
                 .orElseThrow(() -> new IllegalStateException("ROLE_USER bulunamadı, önce roles tablosuna ekle!"));
         user.getRoles().add(userRole);
 

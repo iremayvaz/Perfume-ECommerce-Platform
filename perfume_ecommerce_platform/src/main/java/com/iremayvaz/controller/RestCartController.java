@@ -1,15 +1,13 @@
 package com.iremayvaz.controller;
 
-import com.iremayvaz.model.dto.AddCartItemResponse;
-import com.iremayvaz.model.dto.AddToCartRequest;
-import com.iremayvaz.model.dto.AddToCartResponse;
-import com.iremayvaz.model.entity.CartItem;
+import com.iremayvaz.model.dto.response.AddCartItemResponse;
+import com.iremayvaz.model.dto.request.AddToCartRequest;
+import com.iremayvaz.model.dto.response.AddToCartResponse;
 import com.iremayvaz.service.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,8 +1,8 @@
 package com.iremayvaz.controller;
 
-import com.iremayvaz.model.dto.DtoUser;
-import com.iremayvaz.model.dto.DtoUserInsert;
-import com.iremayvaz.model.dto.MeResponse;
+import com.iremayvaz.model.dto.response.DtoUser;
+import com.iremayvaz.model.dto.request.DtoUserInsert;
+import com.iremayvaz.model.dto.response.MeResponse;
 import com.iremayvaz.model.entity.User;
 import com.iremayvaz.model.jwt.AuthRequest;
 import com.iremayvaz.model.jwt.AuthResponse;
@@ -18,12 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Map;
 
 @Tag(name = "Auth API", description = "Auth işlemleri")
 @RestController

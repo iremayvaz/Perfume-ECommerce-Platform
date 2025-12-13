@@ -1,8 +1,8 @@
 package com.iremayvaz.service;
 
-import com.iremayvaz.model.dto.AddToCartRequest;
-import com.iremayvaz.model.dto.AddCartItemResponse;
-import com.iremayvaz.model.dto.AddToCartResponse;
+import com.iremayvaz.model.dto.request.AddToCartRequest;
+import com.iremayvaz.model.dto.response.AddCartItemResponse;
+import com.iremayvaz.model.dto.response.AddToCartResponse;
 import com.iremayvaz.model.entity.Cart;
 import com.iremayvaz.model.entity.CartItem;
 import com.iremayvaz.repository.CartItemRepository;
@@ -97,7 +97,7 @@ public class CartService {
         var cartItem = cartItemRepository.findByUserIdAndItemId(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
                 .orElseThrow(() -> new IllegalArgumentException("No item in this cart"));
 
-        String productName = cartItem.getProduct().getProductName();
+        String productName = cartItem.getProduct().getName();
         cartItemRepository.delete(cartItem); // ürünü sil
 
         return productName + " is removed from cart.";
@@ -118,7 +118,7 @@ public class CartService {
         var cart = cartRepository.findCartByUserId(user_id) // Sepeti bul
                 .orElseThrow(() -> new IllegalArgumentException("Cart is not found"));
 
-        cart.getCartItems() // Sepetteki ürün listesini al
+        cart.getItems() // Sepetteki ürün listesini al
                 .clear();   // Temizle
 
         return "Cart cleared.";
@@ -148,13 +148,13 @@ public class CartService {
 
     // Sepette görüntülecek DTO
     private AddToCartResponse toDto(Cart cart) {
-        Set<AddCartItemResponse> items = cart.getCartItems().stream().map(ci -> {
+        Set<AddCartItemResponse> items = cart.getItems().stream().map(ci -> {
                     BigDecimal line = ci.getUnitPriceSnapshot()
                     .multiply(BigDecimal.valueOf(ci.getQuantity()));
             return new AddCartItemResponse(
                     ci.getId(),
                     ci.getProduct().getId(),
-                    ci.getProduct().getProductName(),
+                    ci.getProduct().getName(),
                     ci.getQuantity(),
                     ci.getUnitPriceSnapshot(),
                     line,

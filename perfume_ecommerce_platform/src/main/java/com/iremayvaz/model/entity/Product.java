@@ -39,11 +39,11 @@ public class Product {
     @Version
     private Long version;
 
-    @Column(name = "product_name", nullable = false)
-    private String productName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "brand_name", nullable = false)
-    private String brandName;
+    @Column(name = "brand", nullable = false)
+    private String brand;
 
     @ManyToOne(fetch = FetchType.LAZY,
                 optional = false)
@@ -54,11 +54,17 @@ public class Product {
     private BigDecimal price;
 
     @Column(name = "stock_quantity", nullable = false)
-    private Integer stock_quantity;
+    private Integer stockQuantity;
 
     @Min(0)
     @Max(5)
     private Double rating;
+
+    @Column(name = "description", length = 1000) // Uzun metinler için length arttırılabilir
+    private String description;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_top_notes",

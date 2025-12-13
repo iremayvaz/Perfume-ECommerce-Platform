@@ -1,4 +1,4 @@
-package com.iremayvaz.model.dto;
+package com.iremayvaz.model.dto.request;
 
 
 import lombok.AllArgsConstructor;

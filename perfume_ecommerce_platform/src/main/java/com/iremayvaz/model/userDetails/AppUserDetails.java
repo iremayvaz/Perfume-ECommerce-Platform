@@ -29,7 +29,7 @@ public class AppUserDetails implements UserDetails {
 
     public Set<RoleName> getRoles() {
         return user.getRoles().stream()
-                .map(Role::getRoleName)
+                .map(Role::getName)
                 .collect(Collectors.toSet());
     }
 

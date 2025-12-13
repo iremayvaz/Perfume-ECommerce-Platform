@@ -32,12 +32,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name =  "order_code", nullable = false,  unique = true, length = 32)
-    private String orderCode;
+    @Column(name =  "code", nullable = false,  unique = true, length = 32)
+    private String code;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OrderState orderState;
+    private OrderState state;
 
     @Column(nullable = false)
     @Positive
@@ -46,7 +46,7 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL,
                 orphanRemoval = true,
                 mappedBy = "order")
-    private Set<OrderItem> orderItems = new HashSet<>();  // Ürünler
+    private Set<OrderItem> items = new HashSet<>();  // Ürünler
 
                                         // FetchType.LAZY : Uygulamanızın veriyi gerçekten kullanmaya karar verene kadar yüklemeyi erteleyeceği anlamına gelir.
     @ManyToOne(optional = false,        // bu ilişkiyi tutan alanın boş (null) olamaz.
@@ -70,10 +70,10 @@ public class Order {
 
     public void addItem(OrderItem item){
         item.setOrder(this);
-        orderItems.add(item);
+        items.add(item);
     }
     public void removeItem(OrderItem item){
         item.setOrder(null);
-        orderItems.remove(item);
+        items.remove(item);
     }
 }

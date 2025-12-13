@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select p from Product p where p.id = :id")
     Optional<Product> findByIdWithLock(@Param("id") Long id);
+
+    // Stoğu 3 veya daha az olan ürünlerin sayısını döner
+    long countByStockQuantityLessThanEqual(int quantity);
+
+    // Stoğu 3 veya daha az olan ürünleri listeler
+    List<Product> findByStockQuantityLessThanEqual(int quantity);
 }
+

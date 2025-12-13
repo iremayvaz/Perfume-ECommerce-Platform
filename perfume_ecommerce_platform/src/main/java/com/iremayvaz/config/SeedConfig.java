@@ -23,10 +23,10 @@ public class SeedConfig {
     }
 
     private void createRoleIfNotExists(RoleName roleName) {
-        roleRepository.findByRoleName(roleName)
+        roleRepository.findByName(roleName)
                 .orElseGet(() -> {
                     Role role = new Role();
-                    role.setRoleName(roleName);
+                    role.setName(roleName);
                     return roleRepository.save(role);
                 });
     }

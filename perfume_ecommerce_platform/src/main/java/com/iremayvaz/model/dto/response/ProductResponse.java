@@ -1,4 +1,4 @@
-package com.iremayvaz.model.dto;
+package com.iremayvaz.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +14,9 @@ import java.math.BigDecimal;
 
 public class ProductResponse {
     private Long id;
-    String productName;
-    String brandName;
-    BigDecimal price;
-    Double rating;
+    private String name;
+    private String brand;
+    private BigDecimal price;
+    private Integer stockQuantity;
+    private Double rating;
 }

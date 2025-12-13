@@ -1,4 +1,4 @@
-package com.iremayvaz.model.dto;
+package com.iremayvaz.model.dto.response;
 
 import com.iremayvaz.model.enums.OrderState;
 import lombok.AllArgsConstructor;
@@ -7,15 +7,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+/**
+ * Sipariş oluşturduktan sonra
+ * sistem sipariş kodu verir
+ * */
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class ViewOrdersResponse {
+// Sipariş oluşturduktan sonra sistem cevabı
+public class PlaceOrderResponse {
     private String orderCode;
-    private LocalDateTime createdAt;
     private OrderState orderState;
     private BigDecimal totalPrice;
 }

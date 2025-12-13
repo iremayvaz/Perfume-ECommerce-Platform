@@ -21,9 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity // spring Security aktif
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class SecurityConfig {
-    // GÜVENLİK KURALLARI
-
+public class SecurityConfig { // GÜVENLİK KURALLARI
     public static final String LOGIN = "/login";
     public static final String REGISTER = "/register";
     public static final String REFRESH_TOKEN = "/refresh-token";
@@ -54,26 +52,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { // Spring Security'nin ana konfigürasyonu
         http.csrf(csrf -> csrf.disable())// csrf devre dışı, çünkü ekstra CSRF token kontrolü gereksiz
                 .authorizeHttpRequests(request -> request
-                                // AUTH endpoint'leri
+                        .requestMatchers("/admin/**").permitAll()
                                 .requestMatchers(LOGIN, REGISTER, REFRESH_TOKEN).permitAll() // bu endpoint'lere herkes erişebilir
                                 .requestMatchers(SWAGGER_PATHS).permitAll()
-                                // Sadece ADMIN
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                // USER + ADMIN (sipariş, sepet vs.)
-                                .requestMatchers("/order/**").hasAnyRole("USER", "ADMIN")
-                                .anyRequest() // Eğer authenticated değilsen
-                                .authenticated()) // Filter katmanına gireceksin! Authenticate olmalısın!
+                                //.requestMatchers("/admin/**").hasRole("ADMIN") // Sadece ADMIN
+                                // .requestMatchers("/order/**").hasAnyRole("USER", "ADMIN") // USER + ADMIN (sipariş, sepet vs.)
+                                .anyRequest()
+                                .authenticated())
                 .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Her istekte JWT bekler????????????????????????????????????????????????????
-                .authenticationProvider(authenticationProvider()) // Kullanıcı doğrulama sağlayıcısını (DaoAuthenticationProvider) Security’ye tanıtıyorsun.
-                .addFilterBefore(jwtAuthenticationFilter, // JWT kontrolü
-                        UsernamePasswordAuthenticationFilter.class); // Gelen request’in header’ında JWT varsa doğrulanır.
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-    // Cross-Site Request Forgery : Siteler arası istek sahteciliği,
-    // tarayıcıda banka oturumu açtın sonra yeni sekmede başka siteye girdin.
-    // O site senmiş gibi bankaya istek atabilir.
 }

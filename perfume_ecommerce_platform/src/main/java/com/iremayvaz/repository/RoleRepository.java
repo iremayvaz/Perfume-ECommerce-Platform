@@ -16,6 +16,6 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
      * SQL : db'deki tablo(sema_adi.tablo_adi) ve sütun isimleri kullanılır. (nativeQuery = true)
      * */
 
-    @Query(value = "FROM Role r WHERE r.roleName = :roleName")
-    Optional<Role> findByRoleName(RoleName roleName);
+    @Query(value = "FROM Role r WHERE r.name = :name")
+    Optional<Role> findByName(RoleName name);
 }
