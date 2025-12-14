@@ -43,15 +43,21 @@
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <span class="material-icons text-primary mr-2">spa</span>
-                <span class="font-bold text-xl tracking-tight">ParfümAdmin</span>
+                <span class="font-bold text-xl tracking-tight">Yönetim Paneli</span>
             </div>
             <div class="flex items-center space-x-4">
-                <button class="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors">
-                    <div class="h-8 w-8 rounded-full bg-pink-100 flex items-center justify-center text-primary font-bold">
-                        A
+                <a th:href="@{/admin/me}"
+                   class="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors">
+                    <div class="h-8 w-8 rounded-full bg-pink-100 flex items-center justify-center text-primary font-bold"
+                         th:text="${adminUser != null and adminUser.firstName != null and #strings.length(adminUser.firstName) > 0
+                                    ? adminUser.firstName.substring(0,1)
+                                    : 'A'}">
                     </div>
-                    <span>Admin</span>
-                </button>
+
+
+                    <span th:text="${adminUser != null ? adminUser.firstName : 'Admin'}"></span>
+                </a>
+
             </div>
         </div>
     </div>

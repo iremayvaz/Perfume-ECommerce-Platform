@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin Profili</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#db2777", // Pink-600
+                        "primary-hover": "#be185d", // Pink-700
+                        "background-light": "#fdf2f8", // Pink-50
+                        "background-dark": "#111827", // Gray-900
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937", // Gray-800
+                        "border-light": "#fbcfe8", // Pink-200
+                        "border-dark": "#374151", // Gray-700
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+<nav class="sticky top-0 z-30 w-full bg-surface-light border-b border-pink-200 shadow-sm backdrop-blur-md bg-opacity-80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center gap-3">
+                <span class="material-icons-round text-primary text-3xl">local_florist</span>
+                <span class="font-bold text-xl tracking-wide text-pink-900 dark:text-white">Yönetim Paneli</span>
+            </div>
+            <div class="flex items-center space-x-6 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <a th:href="@{/admin/products}" class="hover:text-primary transition-colors">Ürünler</a>
+                <a th:href="@{/admin/orders}" class="hover:text-primary transition-colors">Siparişler</a>
+
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button type="submit" class="flex items-center gap-1 hover:text-red-500 transition-colors">
+                        <span>Çıkış</span>
+                        <span class="material-icons-round text-sm">logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="w-full max-w-4xl mb-8 text-center">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Profilim</h1>
+        <p class="text-gray-500 dark:text-gray-400">Hesap bilgilerinizi buradan görüntüleyebilirsiniz.</p>
+    </div>
+
+    <div class="w-full max-w-4xl bg-surface-light dark:bg-surface-dark rounded-2xl shadow-xl border border-border-light dark:border-border-dark overflow-hidden mb-10 transform transition-all hover:shadow-2xl">
+
+        <div class="bg-gradient-to-r from-primary to-pink-700 px-10 py-8 flex items-center gap-5">
+            <div class="bg-white/20 p-4 rounded-full backdrop-blur-sm shadow-inner">
+                <span class="material-icons-round text-white text-4xl">person</span>
+            </div>
+            <div>
+                <h2 class="text-3xl font-bold text-white">
+                    <span th:text="${adminUser.firstName}">Ad</span>
+                    <span th:text="${adminUser.lastName}">Soyad</span>
+                </h2>
+                <p class="text-pink-100 text-base opacity-90">Sistem Yöneticisi</p>
+            </div>
+        </div>
+
+        <div class="p-10 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-3">
+                    <label class="text-sm font-bold uppercase tracking-wider text-primary dark:text-pink-400">Ad</label>
+                    <div class="flex items-center gap-4 p-5 bg-pink-50/50 dark:bg-gray-800 rounded-xl border border-pink-100 dark:border-gray-700 hover:border-primary/30 transition-colors">
+                        <span class="material-icons-round text-primary/70 dark:text-primary">badge</span>
+                        <span class="font-semibold text-xl text-gray-900 dark:text-white" th:text="${adminUser.firstName}">Ahmet</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-sm font-bold uppercase tracking-wider text-primary dark:text-pink-400">Soyad</label>
+                    <div class="flex items-center gap-4 p-5 bg-pink-50/50 dark:bg-gray-800 rounded-xl border border-pink-100 dark:border-gray-700 hover:border-primary/30 transition-colors">
+                        <span class="material-icons-round text-primary/70 dark:text-primary">badge</span>
+                        <span class="font-semibold text-xl text-gray-900 dark:text-white" th:text="${adminUser.lastName}">Yılmaz</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:col-span-2">
+                    <label class="text-sm font-bold uppercase tracking-wider text-primary dark:text-pink-400">Email Adresi</label>
+                    <div class="flex items-center gap-4 p-5 bg-pink-50/50 dark:bg-gray-800 rounded-xl border border-pink-100 dark:border-gray-700 hover:border-primary/30 transition-colors">
+                        <span class="material-icons-round text-primary/70 dark:text-primary">mail</span>
+                        <span class="font-semibold text-xl text-gray-900 dark:text-white" th:text="${adminUser.email}">admin@parfumdukkani.com</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:col-span-2">
+                    <label class="text-sm font-bold uppercase tracking-wider text-primary dark:text-pink-400">Telefon Numarası</label>
+                    <div class="flex items-center gap-4 p-5 bg-pink-50/50 dark:bg-gray-800 rounded-xl border border-pink-100 dark:border-gray-700 hover:border-primary/30 transition-colors">
+                        <span class="material-icons-round text-primary/70 dark:text-primary">phone</span>
+                        <span class="font-semibold text-xl text-gray-900 dark:text-white" th:text="${adminUser.phoneNumber}">+90 555 123 45 67</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 w-full max-w-4xl justify-center items-center">
+        <a href="javascript:history.back()" class="group relative inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-gray-700 dark:text-gray-200 transition-all duration-200 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary w-full sm:w-auto min-w-[160px] shadow-sm">
+            <span class="material-icons-round mr-2 group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            Geri Dön
+        </a>
+
+        <a th:href="@{/admin/dashboard}" class="group relative inline-flex items-center justify-center px-10 py-4 text-base font-bold text-white transition-all duration-200 bg-primary rounded-full hover:bg-primary-hover hover:shadow-lg hover:shadow-pink-500/30 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary w-full sm:w-auto min-w-[200px]">
+            <span class="material-icons-round mr-2">dashboard</span>
+            Dashboard'a Dön
+        </a>
+    </div>
+
+</main>
+
+<footer class="mt-auto py-6 bg-surface-light dark:bg-surface-dark border-t border-border-light dark:border-border-dark text-center">
+    <p class="text-sm text-gray-500 dark:text-gray-400">© 2025 Parfüm Admin Paneli. Tüm hakları saklıdır.</p>
+</footer>
+
+</body>
+</html>

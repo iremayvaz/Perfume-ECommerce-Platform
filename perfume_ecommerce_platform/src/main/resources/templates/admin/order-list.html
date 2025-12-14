@@ -38,20 +38,25 @@
 
 <body class="bg-background-light text-gray-800 font-sans min-h-screen">
 
-<!-- TOP NAV -->
 <nav class="bg-surface-light shadow-sm border-b border-pink-100 px-6 py-3 flex items-center justify-between sticky top-0 z-30">
     <div class="flex items-center gap-3">
         <span class="material-icons-round text-primary text-3xl">local_florist</span>
-        <span class="font-display font-bold text-xl text-gray-900 tracking-wide">ParfümPaneli</span>
+        <span class="font-display font-bold text-xl text-gray-900 tracking-wide">Yönetim Paneli</span>
     </div>
     <div class="flex items-center gap-4">
-        <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">A</div>
+
+        <a th:href="@{/admin/me}" class="group relative cursor-pointer" title="Profilim">
+            <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform group-hover:scale-110"
+                 th:text="${adminInitials}">
+                A
+            </div>
+        </a>
+
     </div>
 </nav>
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-    <!-- HEADER -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div>
             <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-2">Sipariş Listesi</h1>
@@ -65,10 +70,8 @@
         </a>
     </div>
 
-    <!-- TABLE CARD -->
     <div class="bg-surface-light rounded-xl shadow-lg border border-pink-100 overflow-hidden">
 
-        <!-- TOOLBAR (UI) -->
         <div class="p-5 border-b border-pink-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-72">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 material-icons-round text-gray-400 text-lg">search</span>
