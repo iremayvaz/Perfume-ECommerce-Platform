@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin Paneli Giriş</title>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#db2777", // Pink-600 ana renk
+                        "primary-hover": "#be185d", // Pink-700 hover rengi
+                        "background-light": "#fdf2f8",
+                        "purple-accent": "#764ba2" // Eski tasarımdaki mor tonu
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-gradient-to-br from-pink-400 to-purple-600 min-h-screen flex items-center justify-center font-sans antialiased">
+
+<div class="bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md mx-4">
+
+    <div class="flex flex-col items-center mb-8">
+        <div class="text-primary mb-4">
+            <i class="fas fa-spray-can text-6xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600"
+               style="-webkit-background-clip: text; color: transparent; background-clip: text;"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Yönetim Paneli</h1>
+        <p class="text-gray-500 text-sm">Lütfen giriş yapınız</p>
+    </div>
+
+    <div th:if="${param.error}" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded shadow-sm" role="alert">
+        <p class="font-bold text-xs"><i class="fas fa-exclamation-circle mr-2"></i>Hata</p>
+        <p class="text-sm">Kullanıcı adı veya şifre hatalı!</p>
+    </div>
+
+    <div th:if="${param.logout}" class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm" role="alert">
+        <p class="font-bold text-xs"><i class="fas fa-check-circle mr-2"></i>Başarılı</p>
+        <p class="text-sm">Başarıyla çıkış yapıldı.</p>
+    </div>
+
+    <form th:action="@{/admin/login}" method="post" class="space-y-6">
+
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-user text-gray-400 text-lg"></i>
+            </div>
+            <input type="text"
+                   name="username"
+                   class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow text-gray-900 placeholder-gray-500"
+                   placeholder="Email veya Kullanıcı Adı"
+                   required
+                   autofocus/>
+        </div>
+
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-lock text-gray-400 text-lg"></i>
+            </div>
+            <input type="password"
+                   name="password"
+                   class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow text-gray-900 placeholder-gray-500"
+                   placeholder="Şifre"
+                   required/>
+        </div>
+
+        <button type="submit"
+                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-gradient-to-r from-primary to-purple-600 hover:from-primary-hover hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 transform hover:scale-[1.02] uppercase tracking-wide">
+            GİRİŞ YAP
+        </button>
+    </form>
+
+    <div class="mt-8 text-center">
+        <p class="text-xs text-gray-400">Perfume E-Commerce Platform &copy; 2025</p>
+    </div>
+</div>
+
+</body>
+</html>

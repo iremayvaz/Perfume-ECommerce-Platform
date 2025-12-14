@@ -68,20 +68,20 @@
             </div>
         </div>
 
-        <!-- STATUS UPDATE -->
+        <!-- STATE UPDATE -->
         <div class="px-6 py-6 border-b border-pink-100 bg-pink-50/50">
-            <form th:action="@{/admin/orders/update-status}" method="post"
+            <form th:action="@{/admin/orders/update-state}" method="post"
                   class="flex flex-col sm:flex-row items-center justify-between gap-4">
 
                 <input type="hidden" name="orderId" th:value="${order.id}"/>
 
                 <div class="flex items-center gap-4 w-full sm:w-auto">
-                    <label class="text-sm font-semibold text-slate-600 whitespace-nowrap" for="status">
+                    <label class="text-sm font-semibold text-slate-600 whitespace-nowrap" for="state">
                         Sipariş Durumu:
                     </label>
 
                     <div class="relative w-full sm:w-64">
-                        <select id="status" name="status"
+                        <select id="state" name="state"
                                 class="w-full bg-white border border-pink-200 text-slate-700 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5 shadow-sm">
                             <option th:each="st : ${allStates}"
                                     th:value="${st}"
