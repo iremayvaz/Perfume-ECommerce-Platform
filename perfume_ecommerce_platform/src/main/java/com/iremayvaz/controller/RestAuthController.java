@@ -7,9 +7,9 @@ import com.iremayvaz.model.entity.User;
 import com.iremayvaz.model.jwt.AuthRequest;
 import com.iremayvaz.model.jwt.AuthResponse;
 import com.iremayvaz.model.jwt.RefreshTokenRequest;
-import com.iremayvaz.repository.UserRepository;
 import com.iremayvaz.service.AuthService;
 import com.iremayvaz.service.RefreshTokenService;
+import com.iremayvaz.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class RestAuthController{
 
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Operation(description = "Kaydolma")
     @PostMapping("/register")
@@ -71,8 +71,7 @@ public class RestAuthController{
         String email = authentication.getName();
 
         // 3) DB'den kullanıcıyı bul
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+        User user = userService.findByEmail(email);
 
         // 4) DTO dön (istersen field’ları artır)
         MeResponse dto = new MeResponse(

@@ -2,13 +2,17 @@ package com.iremayvaz.controller.admin;
 
 import com.iremayvaz.model.dto.admin.request.DtoAdminProductRequest;
 import com.iremayvaz.model.dto.admin.request.StockForm;
+import com.iremayvaz.model.dto.response.ProductResponse;
 import com.iremayvaz.model.entity.Note;
 import com.iremayvaz.model.entity.Product; // Entity sınıfın
+import com.iremayvaz.model.entity.User;
 import com.iremayvaz.model.enums.NoteType;
-import com.iremayvaz.repository.CategoryRepository;
-import com.iremayvaz.repository.NoteRepository;
+import com.iremayvaz.service.CategoryService;
+import com.iremayvaz.service.NoteService;
 import com.iremayvaz.service.ProductService;
+import com.iremayvaz.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,35 +20,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller // DİKKAT: RestController değil!
+@Controller
 @RequestMapping("/admin/products")
 @RequiredArgsConstructor
 public class AdminProductController {
 
     private final ProductService productService;
-    private final CategoryRepository categoryRepository;
-    private final NoteRepository noteRepository;
+    private final CategoryService categoryService;
+    private final NoteService noteService;
+    private final UserService userService;
 
-    // 1. Ürünleri Listeleme Sayfası
     @GetMapping
     public String listProducts(Model model) {
-        // "products" anahtarı ile listeyi HTML'e gönderiyoruz
         model.addAttribute("products", productService.getProductList());
-        return "admin/product-list"; // templates/admin/product-list.html dosyasını açar
+        return "admin/product-list";
     }
 
-    // 2. Yeni Ürün Ekleme Formu
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Authentication authentication, Model model) {
         model.addAttribute("product", new DtoAdminProductRequest());
 
-        // 1. Tüm Kategorileri Gönder (Erkek-Kış-EDP vb. hazır olsun)
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryService.findAll());
 
-        // 2. Tüm Notaları Gönder
-        List<Note> allNotes = noteRepository.findAll();
+        List<Note> allNotes = noteService.findAll();
 
-        // Notaları tiplerine göre ayırıp sayfaya atıyoruz ki ayrı kutularda çıksın
         model.addAttribute("topNotes", allNotes.stream().filter(n -> n.getType() == NoteType.TOP).toList());
         model.addAttribute("heartNotes", allNotes.stream().filter(n -> n.getType() == NoteType.HEART).toList());
         model.addAttribute("baseNotes", allNotes.stream().filter(n -> n.getType() == NoteType.BASE).toList());
@@ -52,7 +51,6 @@ public class AdminProductController {
         return "admin/product-form";
     }
 
-    // 3. Ürünü Kaydetme İşlemi (Form Submit edildiğinde buraya düşer)
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute("product") DtoAdminProductRequest dto) {
         if (dto.getId() == null) {
@@ -63,10 +61,9 @@ public class AdminProductController {
         return "redirect:/admin/products";
     }
 
-    // 4. Silme İşlemi
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id); // Service'ine delete metodu eklemen gerekebilir
+        productService.deleteProduct(id);
         return "redirect:/admin/products";
     }
 
@@ -102,9 +99,9 @@ public class AdminProductController {
 
         model.addAttribute("product", dto);
 
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryService.findAll());
 
-        List<Note> allNotes = noteRepository.findAll();
+        List<Note> allNotes = noteService.findAll();
         model.addAttribute("topNotes",   allNotes.stream().filter(n -> n.getType() == NoteType.TOP).toList());
         model.addAttribute("heartNotes", allNotes.stream().filter(n -> n.getType() == NoteType.HEART).toList());
         model.addAttribute("baseNotes",  allNotes.stream().filter(n -> n.getType() == NoteType.BASE).toList());
@@ -116,23 +113,31 @@ public class AdminProductController {
     public String showStockForm(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
-        model.addAttribute("stockForm", new StockForm()); // sadece miktar
-        return "admin/product-stock"; // minik bir sayfa
+        model.addAttribute("stockForm", new StockForm());
+        return "admin/product-stock";
     }
 
     @PostMapping("/{id}/stock")
     public String updateStock(
             @PathVariable Long id,
-            @RequestParam("amount") int amount
-    ) {
+            @RequestParam("amount") int amount) {
         if (amount <= 0) {
-            // istersen burada hata mesajı verip sayfaya geri dönebilirsin
-            // şimdilik basit olsun:
             return "redirect:/admin/products/" + id + "/stock";
         }
 
         productService.increaseStock(id, amount);
-        return "redirect:/admin/dashboard";  // veya ürün listesi: /admin/products
+        return "redirect:/admin/dashboard";
     }
 
+    @GetMapping(params = {"column", "content"})
+    public String filterProducts(@RequestParam(required = false) String column,
+                                 @RequestParam(required = false) String content,
+                                 Model model) {
+        if (content == null || content.isBlank() || column.equals("all")) {
+            model.addAttribute("products", productService.getProductList());
+        } else {
+            model.addAttribute("products", productService.filterProduct(column, content));
+        }
+        return "admin/product-list";
+    }
 }

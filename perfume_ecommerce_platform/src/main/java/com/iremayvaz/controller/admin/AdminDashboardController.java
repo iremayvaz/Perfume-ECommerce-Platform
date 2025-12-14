@@ -1,9 +1,11 @@
 package com.iremayvaz.controller.admin;
 
+import com.iremayvaz.model.entity.User;
 import com.iremayvaz.repository.OrderRepository;
 import com.iremayvaz.repository.ProductRepository;
-import com.iremayvaz.repository.UserRepository;
+import com.iremayvaz.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +18,18 @@ public class AdminDashboardController {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping
-    public String showDashboard(Model model) {
+    public String showDashboard(Authentication authentication, Model model) {
+
+        String email = authentication.getName();
+        User user = userService.findByEmail(email);
+
+        String initials = (user.getFirstName().substring(0,1) + user.getLastName().substring(0,1)).toUpperCase();
+
+        model.addAttribute("adminUser", user);
+        model.addAttribute("adminInitials", initials);
 
         // Toplam Ciro (Eğer hiç sipariş yoksa null döner, 0 yapalım)
         Double totalSales = orderRepository.sumTotalSales();
@@ -32,7 +42,7 @@ public class AdminDashboardController {
         model.addAttribute("totalProducts", productRepository.count());
 
         // Toplam Müşteri Sayısı
-        model.addAttribute("totalUsers", userRepository.count());
+        model.addAttribute("totalUsers", userService.count());
 
         // Kritik stok (3 ve altı) olan ürün sayısı
         long lowStockCount = productRepository.countByStockQuantityLessThanEqual(3);

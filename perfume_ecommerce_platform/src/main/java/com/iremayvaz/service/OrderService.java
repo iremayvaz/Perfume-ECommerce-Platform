@@ -155,10 +155,10 @@ public class OrderService {
     }
 
     // Sipariş durumunu güncelle
-    public void updateOrderStatus(Long orderId, OrderState newStatus) {
+    public void updateOrderState(Long orderId, OrderState newState) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Sipariş bulunamadı"));
-        order.setState(newStatus);
+        order.setState(newState);
         orderRepository.save(order);
     }
 

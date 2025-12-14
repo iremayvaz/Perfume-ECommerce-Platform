@@ -35,9 +35,9 @@ public class AdminOrderController {
     }
 
     // 3. Sipariş Durumunu Güncelle (Kargoya Verildi vs.)
-    @PostMapping("/update-status")
-    public String updateStatus(@RequestParam Long orderId, @RequestParam OrderState status) {
-        orderService.updateOrderStatus(orderId, status);
+    @PostMapping("/update-state")
+    public String updateState(@RequestParam Long orderId, @RequestParam OrderState state) {
+        orderService.updateOrderState(orderId, state);
         return "redirect:/admin/orders/" + orderId; // Detay sayfasına geri dön
     }
 }
