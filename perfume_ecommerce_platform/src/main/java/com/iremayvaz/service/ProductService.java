@@ -2,7 +2,6 @@ package com.iremayvaz.service;
 
 import com.iremayvaz.exceptionHandler.InsufficientStockException;
 import com.iremayvaz.model.dto.admin.request.DtoAdminProductRequest;
-import com.iremayvaz.model.dto.admin.response.DtoAdminProductResponse;
 import com.iremayvaz.model.dto.response.CategoryDetailResponse;
 import com.iremayvaz.model.dto.response.ProductDetailResponse;
 import com.iremayvaz.model.dto.response.ProductResponse;
@@ -198,5 +197,17 @@ public class ProductService {
     public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found. Id: " + id));
+    }
+
+    public Long count() {
+        return productRepository.count();
+    }
+
+    public Long countByStockQuantityLessThanEqual(int i) {
+        return productRepository.countByStockQuantityLessThanEqual(i);
+    }
+
+    public List<Product> findByStockQuantityLessThanEqual(int i) {
+        return productRepository.findByStockQuantityLessThanEqual(i);
     }
 }

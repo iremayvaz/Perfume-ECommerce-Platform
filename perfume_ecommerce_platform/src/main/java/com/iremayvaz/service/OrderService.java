@@ -166,4 +166,12 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalStateException("Order not found!"));
     }
+
+    public Long count() {
+        return orderRepository.count();
+    }
+
+    public Double sumTotalSales() {
+        return orderRepository.sumTotalSales();
+    }
 }
