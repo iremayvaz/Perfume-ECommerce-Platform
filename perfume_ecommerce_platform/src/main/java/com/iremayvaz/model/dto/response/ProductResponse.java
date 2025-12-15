@@ -19,4 +19,5 @@ public class ProductResponse {
     private BigDecimal price;
     private Integer stockQuantity;
     private Double rating;
+    private String imageUrl;
 }

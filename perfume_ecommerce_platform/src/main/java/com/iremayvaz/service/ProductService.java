@@ -129,21 +129,18 @@ public class ProductService {
     public void addProduct(DtoAdminProductRequest request) {
         Product product = new Product();
 
-        // 1. Basit Alanlar
         product.setName(request.getName());
         product.setBrand(request.getBrand());
         product.setPrice(request.getPrice());
         product.setStockQuantity(request.getStockQuantity());
-        product.setDescription(null);
-        product.setImageUrl(null);
-        product.setRating(0.0); // Yeni ürün puansız başlar
+        product.setDescription(request.getDescription());
+        product.setImageUrl("https://" + request.getImageUrl());
+        product.setRating(0.0);
 
-        // 2. Kategori Seçimi (ID ile bulup ekliyoruz)
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Kategori Yok!"));
         product.setCategory(category);
 
-        // 3. Notaları Ekle (Null gelirse boş liste ata)
         if (request.getTopNoteIds() != null)
             product.setTopNotes(new HashSet<>(noteRepository.findAllById(request.getTopNoteIds())));
 
@@ -153,7 +150,6 @@ public class ProductService {
         if (request.getBaseNoteIds() != null)
             product.setBaseNotes(new HashSet<>(noteRepository.findAllById(request.getBaseNoteIds())));
 
-        // 4. Kaydet
         productRepository.save(product);
     }
 
@@ -169,28 +165,24 @@ public class ProductService {
                 product.getBrand(),
                 product.getPrice(),
                 product.getStockQuantity() != null ? product.getStockQuantity() : 0,
-                product.getRating()
+                product.getRating(),
+                product.getImageUrl()
         );
     }
 
     public void updateProduct(DtoAdminProductRequest dto) {
-        // 1) Güvenlik: update için id zorunlu
-        if (dto.getId() == null) {
-            throw new IllegalArgumentException("Product id is required for update");
-        }
+        if (dto.getId() == null) throw new IllegalArgumentException("Product id is required for update");
 
-        // 2) Mevcut ürünü DB'den bul
         Product product = productRepository.findById(dto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Product not found. Id: " + dto.getId()));
 
-        // 3) Güncellenecek alanları set et
         product.setName(dto.getName());
         product.setBrand(dto.getBrand());
         product.setPrice(dto.getPrice());
+        product.setImageUrl(dto.getImageUrl());
         product.setDescription(dto.getDescription());
         product.setStockQuantity(dto.getStockQuantity());
 
-        // 4) Kategori güncelle
         var category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found. Id: " + dto.getCategoryId()));
         product.setCategory(category);
@@ -200,7 +192,6 @@ public class ProductService {
         // Set<Note> selectedNotes = noteRepository.findAllById(dto.getNoteIds());
         // product.setNotes(selectedNotes);
 
-        // 6) Save – JPA zaten Dirty Checking ile farkı görür ama save demek zarar vermez
         productRepository.save(product);
     }
 

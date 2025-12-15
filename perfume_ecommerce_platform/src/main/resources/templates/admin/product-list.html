@@ -148,12 +148,22 @@
                         <span class="font-semibold text-gray-900" th:text="${perfume.brand}">Marka</span>
                     </td>
 
-                    <td class="py-4 px-6 text-sm text-gray-700">
-                        <div class="flex items-center gap-2">
-                            <div class="h-8 w-8 min-w-[2rem] rounded bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-400">
-                                IMG
+                    <td class="...">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
+                                <img
+                                        th:if="${perfume.imageUrl != null and !#strings.isEmpty(perfume.imageUrl)}"
+                                        th:src="${#strings.startsWith(perfume.imageUrl, 'http') ? perfume.imageUrl : 'https://' + perfume.imageUrl}"
+                                        alt="img"
+                                        class="h-full w-full object-cover"
+                                        onerror="this.style.display='none';"
+                                />
+                                <span
+                                        th:if="${perfume.imageUrl == null or #strings.isEmpty(perfume.imageUrl)}"
+                                        class="text-xs font-semibold text-gray-500">IMG</span>
                             </div>
-                            <span class="truncate" th:text="${perfume.name}">Parfüm Adı</span>
+
+                            <span th:text="${perfume.name}"></span>
                         </div>
                     </td>
 

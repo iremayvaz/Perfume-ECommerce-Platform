@@ -77,6 +77,7 @@ public class AdminProductController {
         dto.setName(product.getName());
         dto.setBrand(product.getBrand());
         dto.setPrice(product.getPrice());
+        dto.setImageUrl(product.getImageUrl());
         dto.setDescription(product.getDescription());
         dto.setStockQuantity(product.getStockQuantity());
         dto.setCategoryId(product.getCategory().getId());
