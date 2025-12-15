@@ -51,10 +51,10 @@ public class RestCartController {
     }
 
     @Operation(description = "Sepetteki ürünü güncelle")
-    @PutMapping("/update/{item_id}/to/{quantity}/for/{user_id}")
+    @PutMapping("/{user_id}/update")
     public ResponseEntity<AddToCartResponse> updateCartItem(@PathVariable(value = "user_id")  @NotNull Long user_id,
-                                                 @PathVariable(value = "item_id")  @NotNull Long item_id,
-                                                 @PathVariable(value = "quantity") @NotNull int quantity){
+                                                            @RequestParam Long item_id,
+                                                            @RequestParam int quantity) {
         AddToCartResponse response = cartService.updateCartItem(user_id, item_id, quantity);
         return ResponseEntity.ok(response);
     }

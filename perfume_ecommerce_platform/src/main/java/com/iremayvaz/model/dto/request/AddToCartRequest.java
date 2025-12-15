@@ -11,11 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class AddToCartRequest {
-
-    private Long cart_id;
-
     private Long product_id;
-
     private Integer quantity = 1;
-
 }

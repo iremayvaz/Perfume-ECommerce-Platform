@@ -94,7 +94,7 @@ public class CartService {
     @Transactional
     // Sepetten bir ürünü tüm adetleriyle silmek (Çöp kutusu tuşuna basılıncaki davranış)
     public String removeFromCart(Long user_id, Long item_id) {
-        var cartItem = cartItemRepository.findByUserIdAndItemId(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
+        var cartItem = cartItemRepository.findForUser(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
                 .orElseThrow(() -> new IllegalArgumentException("No item in this cart"));
 
         String productName = cartItem.getProduct().getName();
@@ -127,23 +127,25 @@ public class CartService {
     @Transactional
     // Sepetteki ürünü yeni miktarla güncelle
     public AddToCartResponse updateCartItem(Long user_id, Long item_id, int quantity){
-        var cartItem = cartItemRepository.findByUserIdAndItemId(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
-                .orElseThrow(() -> new IllegalArgumentException("No item in this cart"));
-
-        // Front kısmında - veya + butonuna tıklanılmasına göre - veya + miktar gönderilecek!
-        if (quantity <= 0) {
-            cartItemRepository.delete(cartItem);
-        } else {
-            cartItem.setQuantity(cartItem.getQuantity() + quantity); // Önceki miktar + yeni miktar
-            cartItemRepository.save(cartItem);
-        }
 
         // Tüm sepeti görüntüleyeceğiz
         var cart = cartRepository.findCartByUserId(user_id)
-                .orElseThrow(() -> new IllegalArgumentException("")); // sepeti bul
+                .orElseThrow(() -> new IllegalArgumentException("No cart")); // sepeti bul
 
-        AddToCartResponse addToCartResponse = toDto(cart);
-        return addToCartResponse;
+        var cartItem = cartItemRepository.findForUser(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
+                .orElseThrow(() -> new IllegalArgumentException("No item in this cart"));
+
+        int newQuantity = cartItem.getQuantity() + quantity; // Önceki miktar + yeni miktar
+
+        // Front kısmında - veya + butonuna tıklanılmasına göre - veya + miktar gönderilecek!
+        if (newQuantity <= 0) { // Mesela 1 ürün vardı eksilttim
+            int deleted = cartItemRepository.deleteForUser(user_id, item_id);
+            if (deleted == 0) throw new IllegalArgumentException("No item in this cart");
+        } else {
+            cartItem.setQuantity(newQuantity);
+        }
+
+        return toDto(cart);
     }
 
     // Sepette görüntülecek DTO
