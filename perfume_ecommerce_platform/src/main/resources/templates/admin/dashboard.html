@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -52,14 +53,18 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
 
-            <div class="flex items-center gap-3">
+            <!-- LEFT: Logo + Title -->
+            <a th:href="@{/admin/dashboard}" class="flex items-center gap-3">
                 <div class="bg-pink-50 p-2 rounded-lg shadow-sm border border-pink-100">
-                    <span class="material-icons-round text-primary text-2xl">local_florist</span>
+                    <i class="fas fa-spray-can text-2xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600"
+                       style="-webkit-background-clip:text; color:transparent;"></i>
                 </div>
                 <span class="font-bold text-xl tracking-wide text-gray-800">Yönetim Paneli</span>
-            </div>
+            </a>
 
+            <!-- RIGHT: Links + Profile -->
             <div class="flex items-center space-x-6 text-sm font-medium">
+
                 <a class="text-gray-500 hover:text-primary transition-colors"
                    th:href="@{/admin/products}">
                     Ürünler
@@ -78,11 +83,20 @@
                     </button>
                 </form>
 
+                <!-- Profile icon (click -> /admin/me) -->
+                <a th:href="@{/admin/me}" class="group relative cursor-pointer" title="Profilim">
+                    <div class="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs shadow-sm transition-transform group-hover:scale-110"
+                         th:text="${adminInitials != null ? adminInitials : 'ME'}">
+                        ME
+                    </div>
+                </a>
+
             </div>
 
         </div>
     </div>
 </nav>
+
 
 <!-- MAIN -->
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -253,14 +267,30 @@
             </div>
         </div>
 
-        <div class="bg-cyan-50 rounded-xl shadow-sm border border-cyan-100 p-6 flex flex-col justify-center">
-            <div class="flex items-center gap-2 text-cyan-800 mb-3">
-                <span class="material-icons-round">info</span>
+        <div class="rounded-xl shadow-sm border p-6 flex flex-col justify-center"
+             th:classappend="${lowStockCount > 0}
+        ? ' bg-red-50 border-red-200'
+        : ' bg-cyan-50 border-cyan-100'">
+
+            <div class="flex items-center gap-2 mb-3"
+                 th:classappend="${lowStockCount > 0} ? ' text-red-800' : ' text-cyan-800'">
+        <span class="material-icons-round"
+              th:text="${lowStockCount > 0} ? 'warning' : 'info'">info</span>
                 <h3 class="font-bold text-lg">Sistem Mesajı</h3>
             </div>
-            <p class="text-cyan-900 text-sm leading-relaxed">
-                Admin paneli başarıyla kuruldu! React tarafına geçmeden önce buradan örnek veriler (ürün, sipariş) oluşturmayı unutma.
+
+            <p class="text-sm leading-relaxed"
+               th:classappend="${lowStockCount > 0} ? ' text-red-900' : ' text-cyan-900'">
+        <span th:if="${lowStockCount > 0}">
+            <b>Kritik stok uyarısı:</b> Stok seviyesi 3 ve altına düşen ürünler bulunuyor.
+            Satışların aksamaması için <b>üreticiden tedarik</b> etmeyi unutma.
+        </span>
+
+                <span th:if="${lowStockCount == 0}">
+            Stok durumları stabil. Kritik seviyede ürün bulunmuyor
+        </span>
             </p>
+
         </div>
 
     </div>

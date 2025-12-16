@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
@@ -38,22 +39,55 @@
 
 <body class="bg-background-light text-gray-800 font-sans min-h-screen">
 
-<nav class="bg-surface-light shadow-sm border-b border-pink-100 px-6 py-3 flex items-center justify-between sticky top-0 z-30">
-    <div class="flex items-center gap-3">
-        <span class="material-icons-round text-primary text-3xl">local_florist</span>
-        <span class="font-display font-bold text-xl text-gray-900 tracking-wide">Yönetim Paneli</span>
-    </div>
-    <div class="flex items-center gap-4">
+<!-- NAVBAR -->
+<nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-pink-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
 
-        <a th:href="@{/admin/me}" class="group relative cursor-pointer" title="Profilim">
-            <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm shadow-sm transition-transform group-hover:scale-110"
-                 th:text="${adminInitials}">
-                A
+            <!-- LEFT: Logo + Title -->
+            <a th:href="@{/admin/dashboard}" class="flex items-center gap-3">
+                <div class="bg-pink-50 p-2 rounded-lg shadow-sm border border-pink-100">
+                    <i class="fas fa-spray-can text-2xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600"
+                       style="-webkit-background-clip:text; color:transparent;"></i>
+                </div>
+                <span class="font-bold text-xl tracking-wide text-gray-800">Yönetim Paneli</span>
+            </a>
+
+            <!-- RIGHT: Links + Profile -->
+            <div class="flex items-center space-x-6 text-sm font-medium">
+
+                <a class="text-gray-500 hover:text-primary transition-colors"
+                   th:href="@{/admin/products}">
+                    Ürünler
+                </a>
+
+                <a class="text-gray-500 hover:text-primary transition-colors"
+                   th:href="@{/admin/orders}">
+                    Siparişler
+                </a>
+
+                <form th:action="@{/admin/logout}" method="post" class="inline">
+                    <button type="submit"
+                            class="flex items-center gap-1 text-gray-500 hover:text-red-500 transition-colors">
+                        <span>Çıkış</span>
+                        <span class="material-icons-round text-sm">logout</span>
+                    </button>
+                </form>
+
+                <!-- Profile icon (click -> /admin/me) -->
+                <a th:href="@{/admin/me}" class="group relative cursor-pointer" title="Profilim">
+                    <div class="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs shadow-sm transition-transform group-hover:scale-110"
+                         th:text="${adminInitials != null ? adminInitials : 'ME'}">
+                        ME
+                    </div>
+                </a>
+
             </div>
-        </a>
 
+        </div>
     </div>
 </nav>
+
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 

@@ -5,6 +5,8 @@ import com.iremayvaz.model.enums.OrderState;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Locale;
+
 @UtilityClass
 public class OrderSpecifications {
 
@@ -12,7 +14,8 @@ public class OrderSpecifications {
         return (root, query, cb) -> {
             if (term == null || term.isBlank()) return cb.conjunction();
 
-            String v = term.trim().toLowerCase();
+            String raw = term.trim();
+            String v = raw.toLowerCase();
 
             var codeLike = cb.like(cb.lower(root.get("code")), like(v));
 
@@ -27,7 +30,7 @@ public class OrderSpecifications {
 
             // "PAID" gibi bir şey yazıldıysa state filtresi de eklensin
             try {
-                OrderState st = OrderState.valueOf(term.trim().toUpperCase());
+                OrderState st = OrderState.valueOf(raw.toUpperCase(Locale.ROOT));
                 var stateEq = cb.equal(root.get("state"), st);
                 return cb.or(codeLike, userLike, stateEq);
             } catch (IllegalArgumentException ex) {
@@ -37,7 +40,7 @@ public class OrderSpecifications {
     }
 
     private static String like(String v) {
-        return "%" + v.toLowerCase() + "%";
+        return "%" + v + "%";
     }
 }
 
