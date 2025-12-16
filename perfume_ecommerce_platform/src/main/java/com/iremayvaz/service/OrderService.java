@@ -1,17 +1,18 @@
 package com.iremayvaz.service;
 
 import com.iremayvaz.model.dto.request.PlaceOrderRequest;
-import com.iremayvaz.model.dto.response.OrderItemDto;
-import com.iremayvaz.model.dto.response.PlaceOrderResponse;
-import com.iremayvaz.model.dto.response.ViewOrderDetailResponse;
-import com.iremayvaz.model.dto.response.ViewOrdersResponse;
+import com.iremayvaz.model.dto.response.*;
 import com.iremayvaz.model.entity.CartItem;
 import com.iremayvaz.model.entity.Order;
 import com.iremayvaz.model.entity.OrderItem;
+import com.iremayvaz.model.entity.Product;
 import com.iremayvaz.model.enums.OrderState;
 import com.iremayvaz.repository.CartRepository;
 import com.iremayvaz.repository.OrderRepository;
+import com.iremayvaz.repository.specs.OrderSpecifications;
+import com.iremayvaz.repository.specs.ProductSpecifications;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,19 +101,7 @@ public class OrderService {
 
     public List<ViewOrdersResponse> viewOrders(Long user_id){
         List<Order> orders = orderRepository.findByUser_IdOrderByCreatedAtDesc(user_id);
-
-        List<ViewOrdersResponse> viewOrdersResponses = new ArrayList<>();
-
-        for (Order order : orders) {
-            ViewOrdersResponse viewOrdersResponse = new ViewOrdersResponse();
-            viewOrdersResponse.setOrderCode(order.getCode());
-            viewOrdersResponse.setCreatedAt(order.getCreatedAt());      // böyle bir field varsa ekleyebilirsin
-            viewOrdersResponse.setOrderState(order.getState());    // istersen durum da
-            viewOrdersResponse.setTotalPrice(order.getTotalPrice());  // ileride toplam tutar da eklenebilir
-            viewOrdersResponses.add(viewOrdersResponse);
-        }
-
-        return viewOrdersResponses;
+        return toViewOrdersResponse(orders);
     }
 
     public ViewOrderDetailResponse viewOrderDetails(Long order_id){
@@ -167,11 +156,27 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalStateException("Order not found!"));
     }
 
-    public Long count() {
-        return orderRepository.count();
+    public Long count() { return orderRepository.count(); }
+
+    public Double sumTotalSales() { return orderRepository.sumTotalSales(); }
+
+    public List<Order> filterOrders(String content) {
+        var spec  = OrderSpecifications.search(content);
+        return orderRepository.findAll(spec);
     }
 
-    public Double sumTotalSales() {
-        return orderRepository.sumTotalSales();
+    private List<ViewOrdersResponse> toViewOrdersResponse(List<Order> orders){
+        List<ViewOrdersResponse> viewOrdersResponses = new ArrayList<>();
+
+        for (Order order : orders) {
+            ViewOrdersResponse viewOrdersResponse = new ViewOrdersResponse();
+            viewOrdersResponse.setOrderCode(order.getCode());
+            viewOrdersResponse.setCreatedAt(order.getCreatedAt());      // böyle bir field varsa ekleyebilirsin
+            viewOrdersResponse.setOrderState(order.getState());    // istersen durum da
+            viewOrdersResponse.setTotalPrice(order.getTotalPrice());  // ileride toplam tutar da eklenebilir
+            viewOrdersResponses.add(viewOrdersResponse);
+        }
+
+        return viewOrdersResponses;
     }
 }

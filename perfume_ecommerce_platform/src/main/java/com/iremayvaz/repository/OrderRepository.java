@@ -2,13 +2,14 @@ package com.iremayvaz.repository;
 
 import com.iremayvaz.model.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
     List<Order> findByUser_IdOrderByCreatedAtDesc(Long userId);
 
     // Tüm siparişlerin totalPrice alanlarını toplar

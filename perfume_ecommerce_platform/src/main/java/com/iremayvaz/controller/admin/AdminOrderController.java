@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/orders")
 @RequiredArgsConstructor
@@ -15,14 +17,21 @@ public class AdminOrderController {
 
     private final OrderService orderService;
 
-    // 1. Tüm siparişleri listele
+    // Tüm siparişleri listele
+    // Liste + filtre aynı endpoint
     @GetMapping
-    public String listOrders(Model model) {
-        model.addAttribute("orders", orderService.getAllOrders());
+    public String listOrders(@RequestParam(required = false) String q, Model model) {
+
+        List<Order> orders = (q == null || q.isBlank())
+                ? orderService.getAllOrders()
+                : orderService.filterOrders(q);
+
+        model.addAttribute("orders", orders);
+        model.addAttribute("q", q); // input'ta yazdığın kalsın
         return "admin/order-list";
     }
 
-    // 2. Sipariş Detayını ve Durumunu Göster
+    // Sipariş Detayını ve Durumunu Göster
     @GetMapping("/{id}")
     public String orderDetails(@PathVariable Long id, Model model) {
         // Detay için mevcut viewOrderDetails metodunu veya direkt findById kullanabilirsin
@@ -34,10 +43,22 @@ public class AdminOrderController {
         return "admin/order-detail";
     }
 
-    // 3. Sipariş Durumunu Güncelle (Kargoya Verildi vs.)
+    // Sipariş Durumunu Güncelle (Kargoya Verildi vs.)
     @PostMapping("/update-state")
     public String updateState(@RequestParam Long orderId, @RequestParam OrderState state) {
         orderService.updateOrderState(orderId, state);
         return "redirect:/admin/orders/" + orderId; // Detay sayfasına geri dön
+    }
+
+    // Sipariş kodun, durumuna ve sahibine göre filtrele
+    @GetMapping(params = {"content"})
+    public String filterOrders(@RequestParam(required = false) String content,
+                               Model model) {
+        if (content == null || content.isBlank()) {
+            model.addAttribute("orders", orderService.getAllOrders());
+        } else {
+            model.addAttribute("orders", orderService.filterOrders(content));
+        }
+        return "admin-orders";
     }
 }
