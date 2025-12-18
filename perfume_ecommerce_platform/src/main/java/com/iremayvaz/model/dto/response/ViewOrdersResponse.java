@@ -14,8 +14,9 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class ViewOrdersResponse {
-    private String orderCode;
+    private Long id;
+    private String code;
     private LocalDateTime createdAt;
-    private OrderState orderState;
+    private OrderState state;
     private BigDecimal totalPrice;
 }

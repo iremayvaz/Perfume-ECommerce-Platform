@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -61,7 +59,7 @@ public class User {
                 cascade = CascadeType.ALL,
                 orphanRemoval = true,
                 mappedBy = "user")
-    private Set<Address> addresses = new HashSet<>();  // Adresler : Bir kullanıcının birden fazla adresi olabilir.
+    private List<Address> addresses = new ArrayList<>();  // Adresler : Bir kullanıcının birden fazla adresi olabilir.
 
     public void addAddress(Address address) {
         address.setUser(this);

@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Tag(name = "Cart API", description = "Sepet işlemleri")
 @RestController
@@ -38,7 +38,7 @@ public class RestCartController {
 
     @Operation(description = "Sepeti görüntüle")
     @GetMapping("/view/{user_id}")
-    public ResponseEntity<Set<AddCartItemResponse>> viewCart(@PathVariable(value = "user_id") @NotNull Long user_id){
+    public ResponseEntity<List<AddCartItemResponse>> viewCart(@PathVariable(value = "user_id") @NotNull Long user_id){
         var cartItems = cartService.viewCart(user_id);
         return ResponseEntity.ok(cartItems);
     }

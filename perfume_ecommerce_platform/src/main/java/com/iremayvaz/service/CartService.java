@@ -104,11 +104,11 @@ public class CartService {
     }
 
     // Sepetteki tüm ürünleri görüntüle
-    public Set<AddCartItemResponse> viewCart(Long user_id){
+    public List<AddCartItemResponse> viewCart(Long user_id){
         var cart = cartRepository.findCartByUserId(user_id) // Kullanıcının sepetini bul
                 .orElseThrow(() -> new IllegalArgumentException("Cart is not found"));
         AddToCartResponse addToCartResponse = toDto(cart);
-        Set<AddCartItemResponse> addCartItemResponse = addToCartResponse.getCartItems(); // Sepetteki ürünleri al
+        List<AddCartItemResponse> addCartItemResponse = addToCartResponse.getCartItems(); // Sepetteki ürünleri al
         return addCartItemResponse;
     }
 
@@ -135,7 +135,7 @@ public class CartService {
         var cartItem = cartItemRepository.findForUser(user_id, item_id)   // Kullanıcı id ve item id'ye göre ürünü bul
                 .orElseThrow(() -> new IllegalArgumentException("No item in this cart"));
 
-        int newQuantity = cartItem.getQuantity() + quantity; // Önceki miktar + yeni miktar
+        int newQuantity = quantity; // Önceki miktar + yeni miktar
 
         // Front kısmında - veya + butonuna tıklanılmasına göre - veya + miktar gönderilecek!
         if (newQuantity <= 0) { // Mesela 1 ürün vardı eksilttim
@@ -150,20 +150,24 @@ public class CartService {
 
     // Sepette görüntülecek DTO
     private AddToCartResponse toDto(Cart cart) {
-        Set<AddCartItemResponse> items = cart.getItems().stream().map(ci -> {
+        List<AddCartItemResponse> items = cart.getItems().stream()
+                .sorted(Comparator.comparing(CartItem::getId))
+                .map(ci -> {
                     BigDecimal line = ci.getUnitPriceSnapshot()
-                    .multiply(BigDecimal.valueOf(ci.getQuantity()));
-            return new AddCartItemResponse(
-                    ci.getId(),
-                    ci.getProduct().getId(),
-                    ci.getProduct().getName(),
-                    ci.getQuantity(),
-                    ci.getUnitPriceSnapshot(),
-                    line,
-                    ci.getPriceLockedUntil(),
-                    ci.getCurrency()
-            );
-        }).collect(Collectors.toSet());
+                            .multiply(BigDecimal.valueOf(ci.getQuantity()));
+
+                    return new AddCartItemResponse(
+                            ci.getId(),
+                            ci.getProduct().getId(),
+                            ci.getProduct().getName(),
+                            ci.getQuantity(),
+                            ci.getUnitPriceSnapshot(),
+                            line,
+                            ci.getPriceLockedUntil(),
+                            ci.getCurrency()
+                    );
+                })
+                .toList();
 
         BigDecimal total = items.stream()
                 .map(AddCartItemResponse::getSubTotal)
@@ -171,4 +175,5 @@ public class CartService {
 
         return new AddToCartResponse(cart.getId(), items, total, false);
     }
+
 }

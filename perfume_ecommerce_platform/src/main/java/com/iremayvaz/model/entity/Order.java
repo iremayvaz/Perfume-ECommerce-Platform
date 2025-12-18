@@ -7,8 +7,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -46,7 +46,7 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL,
                 orphanRemoval = true,
                 mappedBy = "order")
-    private Set<OrderItem> items = new HashSet<>();  // Ürünler
+    private List<OrderItem> items = new ArrayList<>();  // Ürünler
 
                                         // FetchType.LAZY : Uygulamanızın veriyi gerçekten kullanmaya karar verene kadar yüklemeyi erteleyeceği anlamına gelir.
     @ManyToOne(optional = false,        // bu ilişkiyi tutan alanın boş (null) olamaz.

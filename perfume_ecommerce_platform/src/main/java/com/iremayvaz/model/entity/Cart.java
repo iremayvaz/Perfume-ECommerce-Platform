@@ -3,8 +3,8 @@ package com.iremayvaz.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "carts")
@@ -40,7 +40,8 @@ public class Cart {
     @OneToMany(mappedBy = "cart",
                 cascade = CascadeType.ALL,
                 orphanRemoval = true)
-    private Set<CartItem> items = new HashSet<>();  // Bir sepette birden fazla item olabilir.
+    @OrderBy("id ASC")
+    private List<CartItem> items = new ArrayList<>();  // Bir sepette birden fazla item olabilir.
 
     public void addItem(CartItem item) {
         item.setCart(this);

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +22,9 @@ public class ProductResponse {
     private Integer stockQuantity;
     private Double rating;
     private String imageUrl;
+
+    private String concentration; // Category entity'sinden gelecek (EDP, EDT vs.)
+    private Set<String> topNotes; // İsim listesi olarak
+    private Set<String> heartNotes;
+    private Set<String> baseNotes;
 }

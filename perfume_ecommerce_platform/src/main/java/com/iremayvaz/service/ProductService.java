@@ -30,33 +30,21 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final NoteRepository noteRepository;
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> getProductList(){
-        List<ProductResponse> productsResponse = new ArrayList<>();
-
-        List<Product> productList = productRepository.findAll();
-
-        for(Product p: productList){
-            ProductResponse response = new ProductResponse();
-            BeanUtils.copyProperties(p,response);
-            productsResponse.add(response);
-        }
-
-        return productsResponse;
+        return productRepository.findAll()
+                .stream()
+                .map(this::mapToProductResponse)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> filterProduct(String column, String content) {
-        List<ProductResponse> productsResponse = new ArrayList<>();
-
-        var spec  = ProductSpecifications.filterByColumn(column, content);
-        List<Product> filteredProducts = productRepository.findAll(spec);
-
-        for(Product p : filteredProducts){
-            ProductResponse response = new ProductResponse();
-            BeanUtils.copyProperties(p, response);
-            productsResponse.add(response);
-        }
-
-        return productsResponse;
+        var spec = ProductSpecifications.filterByColumn(column, content);
+        return productRepository.findAll(spec)
+                .stream()
+                .map(this::mapToProductResponse)
+                .toList();
     }
 
     public ProductDetailResponse getProductInfo(Long id) {
@@ -158,6 +146,11 @@ public class ProductService {
     }
 
     private ProductResponse mapToProductResponse(Product product) {
+        String concentration = null;
+        if (product.getCategory() != null && product.getCategory().getConcentration() != null) {
+            concentration = product.getCategory().getConcentration().name(); // EDP/EDT
+        }
+
         return new ProductResponse(
                 product.getId(),
                 product.getName(),
@@ -165,7 +158,11 @@ public class ProductService {
                 product.getPrice(),
                 product.getStockQuantity() != null ? product.getStockQuantity() : 0,
                 product.getRating(),
-                product.getImageUrl()
+                product.getImageUrl(),
+                concentration,
+                mapNoteNames(product.getTopNotes()),
+                mapNoteNames(product.getHeartNotes()),
+                mapNoteNames(product.getBaseNotes())
         );
     }
 

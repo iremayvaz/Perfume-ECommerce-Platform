@@ -5,14 +5,11 @@ import com.iremayvaz.model.dto.response.*;
 import com.iremayvaz.model.entity.CartItem;
 import com.iremayvaz.model.entity.Order;
 import com.iremayvaz.model.entity.OrderItem;
-import com.iremayvaz.model.entity.Product;
 import com.iremayvaz.model.enums.OrderState;
 import com.iremayvaz.repository.CartRepository;
 import com.iremayvaz.repository.OrderRepository;
 import com.iremayvaz.repository.specs.OrderSpecifications;
-import com.iremayvaz.repository.specs.ProductSpecifications;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -170,10 +167,11 @@ public class OrderService {
 
         for (Order order : orders) {
             ViewOrdersResponse viewOrdersResponse = new ViewOrdersResponse();
-            viewOrdersResponse.setOrderCode(order.getCode());
-            viewOrdersResponse.setCreatedAt(order.getCreatedAt());      // böyle bir field varsa ekleyebilirsin
-            viewOrdersResponse.setOrderState(order.getState());    // istersen durum da
-            viewOrdersResponse.setTotalPrice(order.getTotalPrice());  // ileride toplam tutar da eklenebilir
+            viewOrdersResponse.setId(order.getId());
+            viewOrdersResponse.setCode(order.getCode());
+            viewOrdersResponse.setCreatedAt(order.getCreatedAt());   // böyle bir field varsa ekleyebilirsin
+            viewOrdersResponse.setState(order.getState());           // istersen durum da
+            viewOrdersResponse.setTotalPrice(order.getTotalPrice()); // ileride toplam tutar da eklenebilir
             viewOrdersResponses.add(viewOrdersResponse);
         }
 
