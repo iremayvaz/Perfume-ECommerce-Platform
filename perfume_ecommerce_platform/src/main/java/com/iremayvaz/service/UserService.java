@@ -41,7 +41,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
         Address address = new Address();
-        address.setId(user.getId());
+        address.setId(address.getId());
         address.setType(parseAddressType(request.getAddress_type()));
         address.setCity(request.getShippingCity());
         address.setStreet(request.getShippingStreet());

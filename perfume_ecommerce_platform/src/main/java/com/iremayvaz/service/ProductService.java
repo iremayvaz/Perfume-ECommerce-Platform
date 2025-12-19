@@ -8,6 +8,8 @@ import com.iremayvaz.model.dto.response.ProductResponse;
 import com.iremayvaz.model.entity.Category;
 import com.iremayvaz.model.entity.Note;
 import com.iremayvaz.model.entity.Product;
+import com.iremayvaz.model.enums.Concentration;
+import com.iremayvaz.model.enums.NoteType;
 import com.iremayvaz.repository.CategoryRepository;
 import com.iremayvaz.repository.NoteRepository;
 import com.iremayvaz.repository.ProductRepository;
@@ -205,5 +207,15 @@ public class ProductService {
 
     public List<Product> findByStockQuantityLessThanEqual(int i) {
         return productRepository.findByStockQuantityLessThanEqual(i);
+    }
+
+    public Map<String, Object> getFilterOptions() {
+        Map<String, Object> options = new HashMap<>();
+        options.put("brands", productRepository.findDistinctBrands());
+        options.put("concentrations", Arrays.stream(Concentration.values()).map(Enum::name).toList());
+        options.put("topNotes", noteRepository.findDistinctNamesByType(NoteType.TOP));
+        options.put("heartNotes", noteRepository.findDistinctNamesByType(NoteType.HEART));
+        options.put("baseNotes", noteRepository.findDistinctNamesByType(NoteType.BASE));
+        return options;
     }
 }

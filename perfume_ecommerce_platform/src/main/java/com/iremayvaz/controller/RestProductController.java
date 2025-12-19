@@ -2,14 +2,17 @@ package com.iremayvaz.controller;
 
 import com.iremayvaz.model.dto.response.ProductDetailResponse;
 import com.iremayvaz.model.dto.response.ProductResponse;
+import com.iremayvaz.repository.ProductRepository;
 import com.iremayvaz.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Product API", description = "Ürün işlemleri")
 @RestController
@@ -19,6 +22,7 @@ import java.util.List;
 public class RestProductController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @Operation(description = "Tüm ürünleri listele")
     @GetMapping("/list")
@@ -39,4 +43,9 @@ public class RestProductController {
         return productService.getProductInfo(id);
     }
 
+    @GetMapping("/filter-options")
+    public ResponseEntity<Map<String, Object>> getFilterOptions() {
+        Map<String, Object> options = productService.getFilterOptions();
+        return ResponseEntity.ok(options);
+    }
 }

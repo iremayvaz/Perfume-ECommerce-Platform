@@ -25,5 +25,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
 
     // Stoğu 3 veya daha az olan ürünleri listeler
     List<Product> findByStockQuantityLessThanEqual(int quantity);
+
+    @Query("SELECT DISTINCT p.brand FROM Product p")
+    List<String> findDistinctBrands();
 }
 

@@ -78,7 +78,8 @@ public class RestAuthController{
                 user.getId(),
                 user.getEmail(),
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                user.getPhoneNumber()
         );
 
         return ResponseEntity.ok(dto);
