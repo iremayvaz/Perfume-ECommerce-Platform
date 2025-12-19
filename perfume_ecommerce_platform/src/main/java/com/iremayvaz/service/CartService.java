@@ -106,7 +106,13 @@ public class CartService {
     // Sepetteki tüm ürünleri görüntüle
     public List<AddCartItemResponse> viewCart(Long user_id){
         var cart = cartRepository.findCartByUserId(user_id) // Kullanıcının sepetini bul
-                .orElseThrow(() -> new IllegalArgumentException("Cart is not found"));
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    newCart.setUser(userRepository.findById(user_id).get());
+                    cartRepository.save(newCart);
+                    return newCart;
+                });
+
         AddToCartResponse addToCartResponse = toDto(cart);
         List<AddCartItemResponse> addCartItemResponse = addToCartResponse.getCartItems(); // Sepetteki ürünleri al
         return addCartItemResponse;
