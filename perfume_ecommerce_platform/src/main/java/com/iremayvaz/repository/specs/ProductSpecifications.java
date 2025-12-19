@@ -96,7 +96,7 @@ public class ProductSpecifications {
 
     public static Specification<Product> concentrationIs(Concentration concentration){
         if (concentration == null) return null;
-        return (r,c,cb) -> cb.equal(r.join("category", JoinType.LEFT).get("concentrationName"), concentration);
+        return (r,c,cb) -> cb.equal(r.join("category", JoinType.LEFT).get("concentration"), concentration);
     }
 
     public static Specification<Product> seasonIs(Season season){
@@ -115,7 +115,7 @@ public class ProductSpecifications {
                 case BASE  -> "baseNotes";
             };
 
-            return cb.like(cb.lower(root.join(path, JoinType.LEFT).get("noteName")), like);
+            return cb.like(cb.lower(root.join(path, JoinType.LEFT).get("name")), like);
         };
     }
 
