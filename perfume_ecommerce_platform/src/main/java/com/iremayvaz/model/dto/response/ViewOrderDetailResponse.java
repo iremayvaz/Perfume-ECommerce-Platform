@@ -16,11 +16,11 @@ import java.util.List;
 @Setter
 @Getter
 public class ViewOrderDetailResponse {
-    private String orderCode;
+    private String code;
     private LocalDateTime createdAt;
-    private OrderState orderState;
+    private OrderState state;
     private BigDecimal totalPrice;
-    private List<OrderItemDto> orderItems = new ArrayList<>();
+    private List<OrderItemDto> items = new ArrayList<>();
     private String userName;
     private String shippingCity;
     private String shippingStreet;

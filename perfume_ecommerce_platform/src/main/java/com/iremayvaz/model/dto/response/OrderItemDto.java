@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 public class OrderItemDto { // Sipariş detayındaki ürünler
-    private String productName;
+    private String brand;
+    private String name;
     private Integer quantity;
     private BigDecimal lineTotal;
     private String currency = "TRY";

@@ -106,9 +106,9 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Sipariş bulunamadı."));
 
         ViewOrderDetailResponse viewOrderDetailResponse = new ViewOrderDetailResponse();
-        viewOrderDetailResponse.setOrderCode(order.getCode());
+        viewOrderDetailResponse.setCode(order.getCode());
         viewOrderDetailResponse.setCreatedAt(order.getCreatedAt());
-        viewOrderDetailResponse.setOrderState(order.getState());
+        viewOrderDetailResponse.setState(order.getState());
         viewOrderDetailResponse.setTotalPrice(order.getTotalPrice());
         viewOrderDetailResponse.setShippingCity(order.getShippingCity());
         viewOrderDetailResponse.setShippingStreet(order.getShippingStreet());
@@ -117,10 +117,11 @@ public class OrderService {
 
         for(OrderItem orderItem : order.getItems()) {
             OrderItemDto orderItemDto = new OrderItemDto();
-            orderItemDto.setProductName(orderItem.getProduct().getName());
+            orderItemDto.setBrand(orderItem.getProduct().getBrand());
+            orderItemDto.setName(orderItem.getProduct().getName());
             orderItemDto.setQuantity(orderItem.getQuantity());
             orderItemDto.setLineTotal(orderItem.getLineTotal());
-            viewOrderDetailResponse.getOrderItems().add(orderItemDto);
+            viewOrderDetailResponse.getItems().add(orderItemDto);
         }
 
         return viewOrderDetailResponse;
